@@ -42,12 +42,12 @@ class UploadTestCase extends CI_Controller
                 $user = $this->session->userdata('username');
                 $q    = "delete from pc_testcase where inputcase like 'testCase" . $pid . "%'";
                 $qr   = $this->db->query($q);
-                exec("rm /root/pclp/inputcase/testCase" . $pid . "*");
+                exec("rm " . COMPILER_FOLDER . "inputcase/testCase" . $pid . "*");
 
-                exec("rm /root/pclp/outputcase/hasil" . $pid . "*");
+                exec("rm " . COMPILER_FOLDER . "outputcase/hasil" . $pid . "*");
                 //
 
-                $zip_temp = "/root/pclp/zip_temp/";
+                $zip_temp = COMPILER_FOLDER . "zip_temp/";
                 $zip      = new ZipArchive;
                 if ($zip->open($_FILES["zip"]["tmp_name"]) === true) {
                     $zip->extractTo($zip_temp);
@@ -63,13 +63,13 @@ class UploadTestCase extends CI_Controller
                         $filename = explode(".", $file);
 
                         if ($filename[1] == "in") {
-                            exec("mv " . $zip_temp . $file . " /root/pclp/inputcase/testCase" . $pid . "_" . $filename[0]);
-                            echo "mv " . $zip_temp . $file . "/root/pclp/inputcase/testCase" . $pid . "_" . $filename[0];
+                            exec("mv " . $zip_temp . $file . " " . COMPILER_FOLDER . "inputcase/testCase" . $pid . "_" . $filename[0]);
+                            echo "mv " . $zip_temp . $file . COMPILER_FOLDER . "inputcase/testCase" . $pid . "_" . $filename[0];
                             //Membuat bayangan $_FILES[picase]
                             $_FILES["picase" . $filename[0]]["tmp_name"] = $zip_temp . $file;
                             $_FILES["picase" . $filename[0]]["error"]    = 0;
                         } else if ($filename[1] == "out") {
-                            exec("mv " . $zip_temp . $file . " /root/pclp/outputcase/hasil" . $pid . "_" . $filename[0]);
+                            exec("mv " . $zip_temp . $file . " " . COMPILER_FOLDER . "outputcase/hasil" . $pid . "_" . $filename[0]);
                             //Membuat bayangan $_FILES[picase]
                             $_FILES["pocase" . $filename[0]]["tmp_name"] = $zip_temp . $file;
                             $_FILES["pocase" . $filename[0]]["error"]    = 0;
@@ -104,36 +104,36 @@ class UploadTestCase extends CI_Controller
 
             for ($i = 1; $i <= $size; $i++) {
                 if ($_FILES["picase" . $i]["error"] > 0) {
-                    if (file_exists("/root/pclp/inputcase/testCase" . $pid . "_" . $i)) {
+                    if (file_exists(COMPILER_FOLDER . "inputcase/testCase" . $pid . "_" . $i)) {
                         //echo $_FILES["file"]["name"] . " already exists. ";
                     } else {
-                        $myFile = "/root/pclp/inputcase/testCase" . $pid . "_" . $i;
+                        $myFile = COMPILER_FOLDER . "inputcase/testCase" . $pid . "_" . $i;
                         $fh     = fopen($myFile, 'w');
                         fwrite($fh, "");
                         fclose($fh);
-                        exec("fromdos /root/pclp/inputcase/testCase" . $pid . "_" . $i);
+                        exec("fromdos " . COMPILER_FOLDER . "inputcase/testCase" . $pid . "_" . $i);
                     }
                 } else {
                     move_uploaded_file($_FILES["picase" . $i]["tmp_name"],
-                        "/root/pclp/inputcase/testCase" . $pid . "_" . $i);
-                    exec("fromdos /root/pclp/inputcase/testCase" . $pid . "_" . $i);
+                        COMPILER_FOLDER . "inputcase/testCase" . $pid . "_" . $i);
+                    exec("fromdos " . COMPILER_FOLDER . "inputcase/testCase" . $pid . "_" . $i);
                 }
 
                 if ($_FILES["pocase" . $i]["error"] > 0) {
-                    if (file_exists("/root/pclp/outputcase/hasil" . $pid . "_" . $i)) {
+                    if (file_exists(COMPILER_FOLDER . "outputcase/hasil" . $pid . "_" . $i)) {
                         //echo $_FILES["file"]["name"] . " already exists. ";
                     } else {
-                        $myFile = "/root/pclp/outputcase/hasil" . $pid . "_" . $i;
+                        $myFile = COMPILER_FOLDER . "outputcase/hasil" . $pid . "_" . $i;
                         $fh     = fopen($myFile, 'w');
                         fwrite($fh, "");
                         fclose($fh);
-                        exec("fromdos /root/pclp/outputcase/hasil" . $pid . "_" . $i);
+                        exec("fromdos " . COMPILER_FOLDER . "outputcase/hasil" . $pid . "_" . $i);
                     }
 
                 } else {
                     move_uploaded_file($_FILES["pocase" . $i]["tmp_name"],
-                        "/root/pclp/outputcase/hasil" . $pid . "_" . $i);
-                    exec("fromdos /root/pclp/outputcase/hasil" . $pid . "_" . $i);
+                        COMPILER_FOLDER . "outputcase/hasil" . $pid . "_" . $i);
+                    exec("fromdos " . COMPILER_FOLDER . "outputcase/hasil" . $pid . "_" . $i);
                 }
 
                 $newdata = array(
@@ -175,9 +175,9 @@ class UploadTestCase extends CI_Controller
             if ($qr->num_rows() > 0 || $ceksess2) {
                 $q  = "delete from pc_testcase where inputcase = '" . $val . "'";
                 $qr = $this->db->query($q);
-                exec("rm /root/pclp/inputcase/" . $val);
+                exec("rm " . COMPILER_FOLDER . "inputcase/" . $val);
                 $val = str_replace("testCase", "hasil", $val);
-                exec("rm /root/pclp/outputcase/" . $val);
+                exec("rm " . COMPILER_FOLDER . "outputcase/" . $val);
             }
             redirect(site_url() . '/uploadtestcase/prob/' . $pid);
         }

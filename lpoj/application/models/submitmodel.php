@@ -173,15 +173,15 @@ class Submitmodel extends CI_Model
         ';
         $qr      = $this->db->query($q);
         $zip     = new ZipArchive;
-        $pathzip = '/root/pclp/zip_temp/' . $cid . '-' . $probid . '.zip';
-        exec('rm -f /root/pclp/zip_temp/*.zip');
+        $pathzip = COMPILER_FOLDER . 'zip_temp/' . $cid . '-' . $probid . '.zip';
+        exec('rm -f ' . COMPILER_FOLDER . 'zip_temp/*.zip');
         $res = $zip->open($pathzip, ZipArchive::CREATE);
         if ($res === true) {
             foreach ($qr->result() as $row) {
 
                 $myFile   = $row->submit_time . "_-_" . $row->submit_hash . "_-_" . $row->problem_id . "_-_" . $row->user_name . "_-_" . $row->submit_filename;
                 $submitid = $row->submit_id;
-                $path     = '/root/pclp/backup/' . $probid . '/' . $myFile;
+                $path     = COMPILER_FOLDER . 'backup/' . $probid . '/' . $myFile;
                 $zip->addFile($path, $row->user_name . '-' . $submitid . '-' . $row->submit_filename);
                 //echo "<td>".unix_to_human($row->submit_time)."</td>";
             }

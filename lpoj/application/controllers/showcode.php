@@ -10,7 +10,7 @@ class Showcode extends CI_Controller
         if ($ceksess == false) {
             redirect(site_url() . '/home');
         } else {
-            $path = "/root/pclp/backup/" . $probid . "/" . $fileName;
+            $path = COMPILER_FOLDER . "backup/" . $probid . "/" . $fileName;
             $lang = "cpp";
             if (substr($fileName, -1) == 's') {
                 $lang = "pas";

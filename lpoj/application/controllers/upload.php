@@ -40,7 +40,7 @@ class Upload extends CI_Controller
                     $iid = $this->Submitmodel->SaveToDb($time,$problem,$participant,$fname,$hashcode);
 
                     $compilerCount = 1;
-                    file_put_contents("/root/pclp/upload/".$fileformat, $this->input->post('usercode'));
+                    file_put_contents(COMPILER_FOLDER . "upload/".$fileformat, $this->input->post('usercode'));
 
                     $this->session->set_flashdata('uploadok','Berhasil Berhasil Berhasil Horeeee');
                     }
@@ -56,7 +56,7 @@ class Upload extends CI_Controller
             } else if (!(in_array(end(explode(".", $_FILES["userfile"]["name"])), array("c", "cpp", "java", "pas")))) {
                 $this->session->set_flashdata('uploaderror', 'The filetype is not allowed');
             } else {
-                if (file_exists("/root/pclp/upload/" . $_FILES["userfile"]["name"])) {
+                if (file_exists(COMPILER_FOLDER . "upload/" . $_FILES["userfile"]["name"])) {
                     $this->session->set_flashdata('fileexist', $_FILES["userfile"]["name"]);
                     //echo $_FILES["userfile"]["name"] . " already exists. ";
                 } else {
@@ -87,7 +87,7 @@ class Upload extends CI_Controller
 
                         $compilerCount = 1;
 
-                        move_uploaded_file($_FILES["userfile"]["tmp_name"], "/root/pclp/upload/" . $fileformat);
+                        move_uploaded_file($_FILES["userfile"]["tmp_name"], COMPILER_FOLDER . "upload/" . $fileformat);
 
                         $this->session->set_flashdata('uploadok', 'File Uploaded Successfully yeeeee');
                         redirect(site_url() . '/solution');

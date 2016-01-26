@@ -208,36 +208,36 @@ class Probset extends CI_Controller
             $pcontent = $this->input->post('pcontent');
 
             if (isset($_FILES["picase"]) && $_FILES["picase"]["error"] > 0) {
-                if (file_exists("/root/pclp/inputcase/testCase" . $pid)) {
+                if (file_exists(COMPILER_FOLDER . "inputcase/testCase" . $pid)) {
                     echo $_FILES["file"]["name"] . " already exists. ";
                 } else {
-                    $myFile = "/root/pclp/inputcase/testCase" . $pid;
+                    $myFile = COMPILER_FOLDER . "inputcase/testCase" . $pid;
                     $fh     = fopen($myFile, 'w');
                     fwrite($fh, "");
                     fclose($fh);
-                    exec("fromdos /root/pclp/inputcase/testCase" . $pid);
+                    exec("fromdos " . COMPILER_FOLDER . "inputcase/testCase" . $pid);
                 }
             } else if (isset($_FILES["picase"])) {
                 move_uploaded_file($_FILES["picase"]["tmp_name"],
-                    "/root/pclp/inputcase/testCase" . $pid);
-                exec("fromdos /root/pclp/inputcase/testCase" . $pid);
+                    COMPILER_FOLDER . "inputcase/testCase" . $pid);
+                exec("fromdos " . COMPILER_FOLDER . "inputcase/testCase" . $pid);
             }
 
             if (isset($_FILES["pocase"]) && $_FILES["pocase"]["error"] > 0) {
-                if (file_exists("/root/pclp/outputcase/hasil" . $pid)) {
+                if (file_exists(COMPILER_FOLDER . "outputcase/hasil" . $pid)) {
                     echo $_FILES["file"]["name"] . " already exists. ";
                 } else {
-                    $myFile = "/root/pclp/outputcase/hasil" . $pid;
+                    $myFile = COMPILER_FOLDER . "outputcase/hasil" . $pid;
                     $fh     = fopen($myFile, 'w');
                     fwrite($fh, "");
                     fclose($fh);
-                    exec("fromdos /root/pclp/outputcase/hasil" . $pid);
+                    exec("fromdos " . COMPILER_FOLDER . "outputcase/hasil" . $pid);
                 }
 
             } else if (isset($_FILES["pocase"])) {
                 move_uploaded_file($_FILES["pocase"]["tmp_name"],
-                    "/root/pclp/outputcase/hasil" . $pid);
-                exec("fromdos /root/pclp/outputcase/hasil" . $pid);
+                    COMPILER_FOLDER . "outputcase/hasil" . $pid);
+                exec("fromdos " . COMPILER_FOLDER . "outputcase/hasil" . $pid);
             }
 
             $picase = "testCase" . $pid;
@@ -246,17 +246,17 @@ class Probset extends CI_Controller
             $prunning = $this->input->post('prunning');
             $pmemory  = $this->input->post('pmemory');
 
-            $myFile = "/root/pclp/limiter/limit" . $pid;
+            $myFile = COMPILER_FOLDER . "limiter/limit" . $pid;
             $fh     = fopen($myFile, 'w');
             fwrite($fh, $prunning);
             fclose($fh);
 
-            $myFile = "/root/pclp/memory/memory" . $pid;
+            $myFile = COMPILER_FOLDER . "memory/memory" . $pid;
             $fh     = fopen($myFile, 'w');
             fwrite($fh, $pmemory);
             fclose($fh);
 
-            $myFile = "/root/pclp/tollerance/toll" . $pid;
+            $myFile = COMPILER_FOLDER . "tollerance/toll" . $pid;
             $fh     = fopen($myFile, 'w');
             fwrite($fh, "0");
             fclose($fh);

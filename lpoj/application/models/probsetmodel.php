@@ -72,12 +72,12 @@ class Probsetmodel extends CI_Model
             $this->db->insert('pc_problem', $data);
             $newid = $this->db->insert_id();
 
-            $myFile = "/root/pclp/limiter/limit" . $newid;
+            $myFile = COMPILER_FOLDER . "limiter/limit" . $newid;
             $fh     = fopen($myFile, 'w');
             fwrite($fh, "1");
             fclose($fh);
 
-            $myFile = "/root/pclp/memory/memory" . $newid;
+            $myFile = COMPILER_FOLDER . "memory/memory" . $newid;
             $fh     = fopen($myFile, 'w');
             fwrite($fh, "16777216");
             fclose($fh);
