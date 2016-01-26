@@ -6,11 +6,11 @@ class Participantmodel extends CI_Model
     public function getProblemNumber($contestid)
     {
         $q = '
-			SELECT *
-			FROM pc_problem pcprob, pc_detcon pcd
-			WHERE pcd.contest_id = ' . $contestid . '
-			and pcprob.problem_id = pcd.problem_id
-		';
+            SELECT *
+            FROM pc_problem pcprob, pc_detcon pcd
+            WHERE pcd.contest_id = ' . $contestid . '
+            and pcprob.problem_id = pcd.problem_id
+        ';
         $qr = $this->db->query($q);
         return $qr->num_rows();
     }
@@ -18,12 +18,12 @@ class Participantmodel extends CI_Model
     public function getParticipantProblem($contestid)
     {
         $q = '
-			SELECT pcprob.problem_id
-			FROM pc_problem pcprob, pc_detcon pcd
-			WHERE pcd.contest_id = ' . $contestid . '
-			and pcprob.problem_id = pcd.problem_id
-			ORDER BY pcprob.problem_id
-		';
+            SELECT pcprob.problem_id
+            FROM pc_problem pcprob, pc_detcon pcd
+            WHERE pcd.contest_id = ' . $contestid . '
+            and pcprob.problem_id = pcd.problem_id
+            ORDER BY pcprob.problem_id
+        ';
         $qr = $this->db->query($q);
         foreach ($qr->result() as $row) {
             echo "<td NOWRAP>Problem #" . $row->problem_id . "</td>";

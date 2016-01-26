@@ -110,12 +110,12 @@ class Problemmodel extends CI_Model
     {
         $participantid = $this->session->userdata('participantid');
         $q             = '
-			SELECT pcprob.problem_id, pcprob.problem_title
-			FROM pc_problem pcprob, pc_participant pcp, pc_detcon pcd
-			WHERE pcp.contest_id = pcd.contest_id
-			AND pcp.participant_id = ' . $participantid . '
-			AND pcd.problem_id = pcprob.problem_id
-		';
+            SELECT pcprob.problem_id, pcprob.problem_title
+            FROM pc_problem pcprob, pc_participant pcp, pc_detcon pcd
+            WHERE pcp.contest_id = pcd.contest_id
+            AND pcp.participant_id = ' . $participantid . '
+            AND pcd.problem_id = pcprob.problem_id
+        ';
         $qr = $this->db->query($q);
         echo "<select name='submitproblem' size='1'>";
         foreach ($qr->result() as $row) {
