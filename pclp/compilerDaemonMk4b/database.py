@@ -1,4 +1,4 @@
 host="localhost"
 user="root"
-dbname="pclp"
+dbname="lpoj"
 passwd="change_me"

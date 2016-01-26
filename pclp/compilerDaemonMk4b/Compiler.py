@@ -17,7 +17,7 @@ import time
 class Compiler:
 
     log = 'compiler.log'
-    dbName = 'pclp'
+    dbName = 'lpoj'
 
     def __init__(self, path):
         self.canonicalPath = path
