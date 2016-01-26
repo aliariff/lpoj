@@ -1,0 +1,5 @@
+SetEnv TZ Asia/Jakarta
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /lpoj/index.php/$1 [L]

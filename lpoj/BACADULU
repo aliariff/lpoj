@@ -1,0 +1,4 @@
+lakukan ini dahulu
+
+chmod u=rwx,go=xr,+s startdaemon
+chmod u=rwx,go=xr,+s stopdaemon
