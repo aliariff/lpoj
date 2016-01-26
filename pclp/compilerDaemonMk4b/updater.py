@@ -10,8 +10,8 @@ import database
 class Updater:
 
     def __init__(self):
-        self.db = _mysql.connection(host='10.151.34.9', user='root',
-                                    passwd='123', db='pclp')
+        self.db = _mysql.connection(host=database.host, user=database.user,
+                                    passwd=database.passwd, db=database.dbname)
 
     def update(self):
         self.db.query('select * from pc_problem')
