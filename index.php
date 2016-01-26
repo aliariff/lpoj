@@ -1,4 +1,4 @@
 <?php
-header( 'Location: http://10.151.34.10/lpoj' ) ;
+header( "Location: http://" . $_SERVER['SERVER_ADDR'] . "/lpoj" );
 exit();
 ?>
