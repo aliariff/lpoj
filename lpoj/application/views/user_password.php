@@ -41,21 +41,6 @@ CuFon ends -->
 									echo "<table><tr><td bgcolor='#77ff77'>".$detailok."</td></tr></table>";
 								}
 							?>
-							<form method='post' action='<?php echo site_url('/changedetail'); ?>'>
-								<table>
-									<tr>
-										<td colspan='2'><h3>User Detail</h3></td>
-									</tr>
-									<tr>
-										<td>User Fullname</td>
-										<td>: <input type='text' name='fullname' value='<?php echo $this->Usermodel->getFullName($this->session->userdata('username')); ?>' /></td>
-									</tr>
-									<tr>
-										<td colspan='2'><input type='submit' value='Update Detail' /></td>
-									</tr>
-								</table>
-							</form>
-							<hr />
 							<?php
 								$error = $this->session->flashdata('error');
 								$success = $this->session->flashdata('success');
@@ -91,7 +76,7 @@ CuFon ends -->
 								</table>
 							</form>
 							<hr />
-							If you're forgot your password please contact administrator
+							<!-- If you're forgot your password please contact administrator -->
 						</p>
 					</div>
 				</div>
