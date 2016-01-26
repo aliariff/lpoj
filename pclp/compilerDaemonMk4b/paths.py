@@ -3,7 +3,7 @@
 #usahakan direktori ini tidak berada di root website
 #hasil adalah nama depan dari file
 inputPath="/root/pclp/outputcase/hasil"
-#outputPath adalah tempat executable diletakan 
+#outputPath adalah tempat executable diletakan
 outputPath="/root/pclp/result/"
 #sourcePath adalah tempat hasil upload source code peserta
 sourcePath="/root/pclp/upload/"

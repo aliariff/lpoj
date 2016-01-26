@@ -1,10 +1,13 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import re
+
+
 def strip(path):
-    file=open(path,"r")
+    file = open(path, 'r')
     for line in file:
-        d=re.search("system",line)
+        d = re.search('system', line)
         if d:
             return True
-        
+
     return False
-    
