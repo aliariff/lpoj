@@ -1,18 +1,16 @@
 <?php
 
-class Password extends CI_Controller {
+class Password extends CI_Controller
+{
 
-	function index()
-	{
-		$ceksess = $this->Usermodel->checkSession();
-		
-		if ($ceksess == FALSE){
-			redirect(site_url().'/login');
-		}
-		else{
-			$this->load->view('user_password');
-		}
-	}
+    public function index()
+    {
+        $ceksess = $this->Usermodel->checkSession();
+
+        if ($ceksess == false) {
+            redirect(site_url() . '/login');
+        } else {
+            $this->load->view('user_password');
+        }
+    }
 }
-
-?>

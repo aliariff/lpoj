@@ -83,14 +83,14 @@ class Probset extends CI_Controller
 
             if ($username && $pass && ($pass == $repass)) {
                 $hash = do_hash($pass, 'sha1');
-                $q    = "	UPDATE pc_user
-						SET user_password='" . $hash . "', user_status='2'
-						WHERE user_name='" . $username . "' ";
+                $q    = "   UPDATE pc_user
+                        SET user_password='" . $hash . "', user_status='2'
+                        WHERE user_name='" . $username . "' ";
                 $this->db->query($q);
             } else if (!$pass && !$repass) {
-                $q = "	UPDATE pc_user
-						SET user_status='2'
-						WHERE user_name='" . $username . "' ";
+                $q = "  UPDATE pc_user
+                        SET user_status='2'
+                        WHERE user_name='" . $username . "' ";
                 $this->db->query($q);
             }
             redirect(site_url() . '/probset/changePass');
