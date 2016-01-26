@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import paths
 import _mysql
 import os
@@ -34,12 +35,15 @@ class Updater:
             tollerance = open(paths.tollerancepath + row[0][0], 'w')
             tollerance.write(row[0][9])
             tollerance.close()
-            if not os.path.exists('/root/pclp/backup/' + row[0][0]):
-                os.system('mkdir /root/pclp/backup/' + row[0][0])
-        files = os.listdir('/root/pclp/komparator/')
+            if not os.path.exists(paths.rootCompilerPath + 'backup/'
+                                  + row[0][0]):
+                os.system('mkdir ' + paths.rootCompilerPath + 'backup/'
+                          + row[0][0])
+        files = os.listdir(paths.rootCompilerPath + 'komparator/')
         print files
         for i in files:
-            os.system('fromdos ' + '/root/pclp/komparator/' + i)
+            os.system('fromdos ' + paths.rootCompilerPath
+                      + 'komparator/' + i)
 
 
 if __name__ == '__main__':
