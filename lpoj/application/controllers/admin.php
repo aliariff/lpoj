@@ -346,14 +346,14 @@ class Admin extends CI_Controller
 
             if ($username && $pass && ($pass == $repass)) {
                 $hash = do_hash($pass, 'sha1');
-                $q    = "	UPDATE pc_user
-						SET user_password='" . $hash . "', user_status='" . $stat . "'
-						WHERE user_name='" . $username . "' ";
+                $q    = "   UPDATE pc_user
+                        SET user_password='" . $hash . "', user_status='" . $stat . "'
+                        WHERE user_name='" . $username . "' ";
                 $this->db->query($q);
             } else if (!$pass && !$repass) {
-                $q = "	UPDATE pc_user
-						SET user_status='" . $stat . "'
-						WHERE user_name='" . $username . "' ";
+                $q = "  UPDATE pc_user
+                        SET user_status='" . $stat . "'
+                        WHERE user_name='" . $username . "' ";
                 $this->db->query($q);
             }
 
@@ -370,8 +370,8 @@ class Admin extends CI_Controller
             $username = $this->input->post("usernameid1");
 
             if ($username) {
-                $q = "	delete from pc_user
-						WHERE user_name='" . $username . "' ";
+                $q = "  delete from pc_user
+                        WHERE user_name='" . $username . "' ";
                 $this->db->query($q);
             }
 
