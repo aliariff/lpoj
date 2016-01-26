@@ -92,10 +92,10 @@ class Contestmodel extends CI_Model
     public function writeContestDesc($cid)
     {
         $q = '
-			SELECT pccon.contest_id, pccon.contest_name, pccon.contest_description
-			FROM pc_contest pccon
-			WHERE pccon.contest_id = ' . $cid . '
-		';
+      SELECT pccon.contest_id, pccon.contest_name, pccon.contest_description
+      FROM pc_contest pccon
+      WHERE pccon.contest_id = ' . $cid . '
+    ';
         $qr = $this->db->query($q);
         if ($qr->num_rows() > 0) {
             $row = $qr->first_row();
@@ -108,10 +108,10 @@ class Contestmodel extends CI_Model
     public function getContestDetail($cid)
     {
         $q = '
-			SELECT pccon.contest_id, pccon.contest_name, pccon.contest_start, pccon.contest_end, pccon.contest_freeze, pccon.contest_penalty
-			FROM pc_contest pccon
-			WHERE pccon.contest_id = ' . $cid . '
-		';
+      SELECT pccon.contest_id, pccon.contest_name, pccon.contest_start, pccon.contest_end, pccon.contest_freeze, pccon.contest_penalty
+      FROM pc_contest pccon
+      WHERE pccon.contest_id = ' . $cid . '
+    ';
 
         $qr  = $this->db->query($q);
         $row = $qr->first_row();
@@ -137,11 +137,11 @@ class Contestmodel extends CI_Model
     public function checkContestPassword($contestid, $contestpass)
     {
         $q = '
-			SELECT pcc.contest_id
-			FROM pc_contest pcc
-			WHERE contest_id     = ' . $contestid . '
-			AND contest_password = ' . $this->db->escape(dohash($contestpass, 'sha1')) . '
-		';
+      SELECT pcc.contest_id
+      FROM pc_contest pcc
+      WHERE contest_id     = ' . $contestid . '
+      AND contest_password = ' . $this->db->escape(dohash($contestpass, 'sha1')) . '
+    ';
         $qr = $this->db->query($q);
         if ($qr->num_rows() > 0) {
             $row  = $qr->first_row();
@@ -242,492 +242,492 @@ class Contestmodel extends CI_Model
         $freezetime = $this->getContestFreezeId($cid);
 
         $q = '
-			SELECT realData.*,
-			  sumData.total_time
-			FROM
-			  (SELECT allProblem.problem_id,
-				allProblem.participant_id,
-				pcpar.user_name,
-				IFNULL(submitLogic.submit_count,0)                               AS submit_count,
-				IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty AS penalty,
-				IFNULL(submitLogic.acc,0)                                        AS acc,
-				IFNULL(accCounter.total_acc,0)                                   AS total_acc,
-				IFNULL(submitTime.maxtime, 0)                                    AS maxtime,
-				contestData.contest_start,
-				IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty) AS fixtime
-			  FROM
-				(SELECT pcprob.problem_id,
-				  pcp.participant_id,
-				  pcp.contest_id
-				FROM pc_problem pcprob,
-				  pc_participant pcp,
-				  pc_detcon pcd
-				WHERE pcd.contest_id = ' . $contestid . '
-				AND pcp.contest_id      = ' . $contestid . '
-				AND pcprob.problem_id = pcd.problem_id
-				) allProblem
-			  LEFT JOIN
-				( SELECT * FROM pc_participant
-				) pcpar
-			  ON pcpar.participant_id = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT submitData.*,
-				  acceptedData.acc,
-				  acceptedData.total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS submit_count
-				  FROM pc_submit pcsub,
-					( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
-					) problist
-				  WHERE problist.problem_id = pcsub.problem_id AND pcsub.submit_time < ' . $freezetime . '
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) submitData
-				LEFT JOIN
-				  (SELECT freshData.*,
-					totalAccepted.total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) freshData
-				  LEFT JOIN
-					(SELECT dataAcc.participant_id,
-					  SUM(dataAcc.acc_count) AS total_acc
-					FROM
-					  (SELECT pcsub.problem_id,
-						pcsub.participant_id,
-						COUNT(*) AS acc,
-						1        AS acc_count
-					  FROM pc_submit pcsub
-					  WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-					  GROUP BY pcsub.problem_id,
-						pcsub.participant_id
-					  ) dataAcc
-					GROUP BY dataAcc.participant_id
-					) totalAccepted
-				  ON totalAccepted.participant_id         = freshData.participant_id
-				  ) acceptedData ON submitData.problem_id = acceptedData.problem_id
-				AND submitData.participant_id             = acceptedData.participant_id
-				) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
-			  AND submitLogic.participant_id              = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcsub.problem_id,
-				  pcsub.participant_id,
-				  MAX(submit_time) AS maxtime
-				FROM pc_submit pcsub
-				WHERE pcsub.submit_time < ' . $freezetime . '
-				GROUP BY pcsub.problem_id,
-				  pcsub.participant_id
-				) submitTime
-			  ON submitTime.problem_id      = allProblem.problem_id
-			  AND submitTime.participant_id = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcc.contest_id,
-				  pcc.contest_start,
-				  pcc.contest_penalty
-				FROM pc_contest pcc
-				) contestData
-			  ON contestData.contest_id = allProblem.contest_id
-			  LEFT JOIN
-				(SELECT freshData.participant_id,
-				  MAX(totalAccepted.total_acc) AS total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS acc,
-					1        AS acc_count
-				  FROM pc_submit pcsub
-				  WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) freshData
-				LEFT JOIN
-				  (SELECT dataAcc.participant_id,
-					SUM(dataAcc.acc_count) AS total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) dataAcc
-				  GROUP BY dataAcc.participant_id
-				  ) totalAccepted
-				ON totalAccepted.participant_id = freshData.participant_id
-				GROUP BY freshData.participant_id
-				) accCounter ON accCounter.participant_id = allProblem.participant_id
-			  ) realData
-			LEFT JOIN
-			  (SELECT allProblem.participant_id,
-				SUM(IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty)) AS total_time
-			  FROM
-				(SELECT pcprob.problem_id,
-				  pcp.participant_id,
-				  pcp.contest_id
-				FROM pc_problem pcprob,
-				  pc_participant pcp,
-				  pc_detcon pcd
-				WHERE pcd.contest_id = ' . $contestid . '
-				AND pcp.contest_id      = ' . $contestid . '
-				AND pcprob.problem_id = pcd.problem_id
-				) allProblem
-			  LEFT JOIN
-				(SELECT submitData.*,
-				  acceptedData.acc,
-				  acceptedData.total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS submit_count
-				  FROM pc_submit pcsub,
-					( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
-					) problist
-				  WHERE problist.problem_id = pcsub.problem_id AND pcsub.submit_time < ' . $freezetime . '
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) submitData
-				LEFT JOIN
-				  (SELECT freshData.*,
-					totalAccepted.total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) freshData
-				  LEFT JOIN
-					(SELECT dataAcc.participant_id,
-					  SUM(dataAcc.acc_count) AS total_acc
-					FROM
-					  (SELECT pcsub.problem_id,
-						pcsub.participant_id,
-						COUNT(*) AS acc,
-						1        AS acc_count
-					  FROM pc_submit pcsub
-					  WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-					  GROUP BY pcsub.problem_id,
-						pcsub.participant_id
-					  ) dataAcc
-					GROUP BY dataAcc.participant_id
-					) totalAccepted
-				  ON totalAccepted.participant_id         = freshData.participant_id
-				  ) acceptedData ON submitData.problem_id = acceptedData.problem_id
-				AND submitData.participant_id             = acceptedData.participant_id
-				) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
-			  AND submitLogic.participant_id              = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcsub.problem_id,
-				  pcsub.participant_id,
-				  MAX(submit_time) AS maxtime
-				FROM pc_submit pcsub
-				WHERE pcsub.submit_time < ' . $freezetime . '
-				GROUP BY pcsub.problem_id,
-				  pcsub.participant_id
-				) submitTime
-			  ON submitTime.problem_id      = allProblem.problem_id
-			  AND submitTime.participant_id = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcc.contest_id,
-				  pcc.contest_start,
-				  pcc.contest_penalty
-				FROM pc_contest pcc
-				) contestData
-			  ON contestData.contest_id = allProblem.contest_id
-			  LEFT JOIN
-				(SELECT freshData.participant_id,
-				  MAX(totalAccepted.total_acc) AS total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS acc,
-					1        AS acc_count
-				  FROM pc_submit pcsub
-				  WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) freshData
-				LEFT JOIN
-				  (SELECT dataAcc.participant_id,
-					SUM(dataAcc.acc_count) AS total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) dataAcc
-				  GROUP BY dataAcc.participant_id
-				  ) totalAccepted
-				ON totalAccepted.participant_id = freshData.participant_id
-				GROUP BY freshData.participant_id
-				) accCounter ON accCounter.participant_id = allProblem.participant_id
-			  GROUP BY allProblem.participant_id
-			  ) sumData ON sumData.participant_id = realData.participant_id
-			WHERE sumData.total_time > 0
-			ORDER BY realData.total_acc DESC, sumData.total_time, realData.user_name, realData.problem_id
-		';
+      SELECT realData.*,
+        sumData.total_time
+      FROM
+        (SELECT allProblem.problem_id,
+        allProblem.participant_id,
+        pcpar.user_name,
+        IFNULL(submitLogic.submit_count,0)                               AS submit_count,
+        IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty AS penalty,
+        IFNULL(submitLogic.acc,0)                                        AS acc,
+        IFNULL(accCounter.total_acc,0)                                   AS total_acc,
+        IFNULL(submitTime.maxtime, 0)                                    AS maxtime,
+        contestData.contest_start,
+        IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty) AS fixtime
+        FROM
+        (SELECT pcprob.problem_id,
+          pcp.participant_id,
+          pcp.contest_id
+        FROM pc_problem pcprob,
+          pc_participant pcp,
+          pc_detcon pcd
+        WHERE pcd.contest_id = ' . $contestid . '
+        AND pcp.contest_id      = ' . $contestid . '
+        AND pcprob.problem_id = pcd.problem_id
+        ) allProblem
+        LEFT JOIN
+        ( SELECT * FROM pc_participant
+        ) pcpar
+        ON pcpar.participant_id = allProblem.participant_id
+        LEFT JOIN
+        (SELECT submitData.*,
+          acceptedData.acc,
+          acceptedData.total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS submit_count
+          FROM pc_submit pcsub,
+          ( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
+          ) problist
+          WHERE problist.problem_id = pcsub.problem_id AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) submitData
+        LEFT JOIN
+          (SELECT freshData.*,
+          totalAccepted.total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) freshData
+          LEFT JOIN
+          (SELECT dataAcc.participant_id,
+            SUM(dataAcc.acc_count) AS total_acc
+          FROM
+            (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+            FROM pc_submit pcsub
+            WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+            GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+            ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+          ON totalAccepted.participant_id         = freshData.participant_id
+          ) acceptedData ON submitData.problem_id = acceptedData.problem_id
+        AND submitData.participant_id             = acceptedData.participant_id
+        ) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
+        AND submitLogic.participant_id              = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          MAX(submit_time) AS maxtime
+        FROM pc_submit pcsub
+        WHERE pcsub.submit_time < ' . $freezetime . '
+        GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+        ) submitTime
+        ON submitTime.problem_id      = allProblem.problem_id
+        AND submitTime.participant_id = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcc.contest_id,
+          pcc.contest_start,
+          pcc.contest_penalty
+        FROM pc_contest pcc
+        ) contestData
+        ON contestData.contest_id = allProblem.contest_id
+        LEFT JOIN
+        (SELECT freshData.participant_id,
+          MAX(totalAccepted.total_acc) AS total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS acc,
+          1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) freshData
+        LEFT JOIN
+          (SELECT dataAcc.participant_id,
+          SUM(dataAcc.acc_count) AS total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+        ON totalAccepted.participant_id = freshData.participant_id
+        GROUP BY freshData.participant_id
+        ) accCounter ON accCounter.participant_id = allProblem.participant_id
+        ) realData
+      LEFT JOIN
+        (SELECT allProblem.participant_id,
+        SUM(IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty)) AS total_time
+        FROM
+        (SELECT pcprob.problem_id,
+          pcp.participant_id,
+          pcp.contest_id
+        FROM pc_problem pcprob,
+          pc_participant pcp,
+          pc_detcon pcd
+        WHERE pcd.contest_id = ' . $contestid . '
+        AND pcp.contest_id      = ' . $contestid . '
+        AND pcprob.problem_id = pcd.problem_id
+        ) allProblem
+        LEFT JOIN
+        (SELECT submitData.*,
+          acceptedData.acc,
+          acceptedData.total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS submit_count
+          FROM pc_submit pcsub,
+          ( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
+          ) problist
+          WHERE problist.problem_id = pcsub.problem_id AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) submitData
+        LEFT JOIN
+          (SELECT freshData.*,
+          totalAccepted.total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) freshData
+          LEFT JOIN
+          (SELECT dataAcc.participant_id,
+            SUM(dataAcc.acc_count) AS total_acc
+          FROM
+            (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+            FROM pc_submit pcsub
+            WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+            GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+            ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+          ON totalAccepted.participant_id         = freshData.participant_id
+          ) acceptedData ON submitData.problem_id = acceptedData.problem_id
+        AND submitData.participant_id             = acceptedData.participant_id
+        ) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
+        AND submitLogic.participant_id              = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          MAX(submit_time) AS maxtime
+        FROM pc_submit pcsub
+        WHERE pcsub.submit_time < ' . $freezetime . '
+        GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+        ) submitTime
+        ON submitTime.problem_id      = allProblem.problem_id
+        AND submitTime.participant_id = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcc.contest_id,
+          pcc.contest_start,
+          pcc.contest_penalty
+        FROM pc_contest pcc
+        ) contestData
+        ON contestData.contest_id = allProblem.contest_id
+        LEFT JOIN
+        (SELECT freshData.participant_id,
+          MAX(totalAccepted.total_acc) AS total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS acc,
+          1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) freshData
+        LEFT JOIN
+          (SELECT dataAcc.participant_id,
+          SUM(dataAcc.acc_count) AS total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+        ON totalAccepted.participant_id = freshData.participant_id
+        GROUP BY freshData.participant_id
+        ) accCounter ON accCounter.participant_id = allProblem.participant_id
+        GROUP BY allProblem.participant_id
+        ) sumData ON sumData.participant_id = realData.participant_id
+      WHERE sumData.total_time > 0
+      ORDER BY realData.total_acc DESC, sumData.total_time, realData.user_name, realData.problem_id
+    ';
 
         $querynosubmit = '
-			SELECT realData.*,
-			  sumData.total_time
-			FROM
-			  (SELECT allProblem.problem_id,
-				allProblem.participant_id,
-				pcpar.user_name,
-				IFNULL(submitLogic.submit_count,0)                               AS submit_count,
-				IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty AS penalty,
-				IFNULL(submitLogic.acc,0)                                        AS acc,
-				IFNULL(accCounter.total_acc,0)                                   AS total_acc,
-				IFNULL(submitTime.maxtime, 0)                                    AS maxtime,
-				contestData.contest_start,
-				IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty) AS fixtime
-			  FROM
-				(SELECT pcprob.problem_id,
-				  pcp.participant_id,
-				  pcp.contest_id
-				FROM pc_problem pcprob,
-				  pc_participant pcp,
-				pc_detcon pcd
-				WHERE pcd.contest_id = ' . $contestid . '
-				AND pcp.contest_id      = ' . $contestid . '
-				AND pcprob.problem_id = pcd.problem_id
-				) allProblem
-			  LEFT JOIN
-				( SELECT * FROM pc_participant
-				) pcpar
-			  ON pcpar.participant_id = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT submitData.*,
-				  acceptedData.acc,
-				  acceptedData.total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS submit_count
-				  FROM pc_submit pcsub,
-					( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
-					) problist
-				  WHERE problist.problem_id = pcsub.problem_id AND pcsub.submit_time < ' . $freezetime . '
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) submitData
-				LEFT JOIN
-				  (SELECT freshData.*,
-					totalAccepted.total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) freshData
-				  LEFT JOIN
-					(SELECT dataAcc.participant_id,
-					  SUM(dataAcc.acc_count) AS total_acc
-					FROM
-					  (SELECT pcsub.problem_id,
-						pcsub.participant_id,
-						COUNT(*) AS acc,
-						1        AS acc_count
-					  FROM pc_submit pcsub
-					  WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-					  GROUP BY pcsub.problem_id,
-						pcsub.participant_id
-					  ) dataAcc
-					GROUP BY dataAcc.participant_id
-					) totalAccepted
-				  ON totalAccepted.participant_id         = freshData.participant_id
-				  ) acceptedData ON submitData.problem_id = acceptedData.problem_id
-				AND submitData.participant_id             = acceptedData.participant_id
-				) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
-			  AND submitLogic.participant_id              = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcsub.problem_id,
-				  pcsub.participant_id,
-				  MAX(submit_time) AS maxtime
-				FROM pc_submit pcsub
-				WHERE pcsub.submit_time < ' . $freezetime . '
-				GROUP BY pcsub.problem_id,
-				  pcsub.participant_id
-				) submitTime
-			  ON submitTime.problem_id      = allProblem.problem_id
-			  AND submitTime.participant_id = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcc.contest_id,
-				  pcc.contest_start,
-				  pcc.contest_penalty
-				FROM pc_contest pcc
-				) contestData
-			  ON contestData.contest_id = allProblem.contest_id
-			  LEFT JOIN
-				(SELECT freshData.participant_id,
-				  MAX(totalAccepted.total_acc) AS total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS acc,
-					1        AS acc_count
-				  FROM pc_submit pcsub
-				  WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) freshData
-				LEFT JOIN
-				  (SELECT dataAcc.participant_id,
-					SUM(dataAcc.acc_count) AS total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) dataAcc
-				  GROUP BY dataAcc.participant_id
-				  ) totalAccepted
-				ON totalAccepted.participant_id = freshData.participant_id
-				GROUP BY freshData.participant_id
-				) accCounter ON accCounter.participant_id = allProblem.participant_id
-			  ) realData
-			LEFT JOIN
-			  (SELECT allProblem.participant_id,
-				SUM(IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty)) AS total_time
-			  FROM
-				(SELECT pcprob.problem_id,
-				  pcp.participant_id,
-				  pcp.contest_id
-				FROM pc_problem pcprob,
-				  pc_participant pcp,
-				  pc_detcon pcd
-				WHERE pcd.contest_id = ' . $contestid . '
-				AND pcp.contest_id      = ' . $contestid . '
-				AND pcprob.problem_id = pcd.problem_id
-				) allProblem
-			  LEFT JOIN
-				(SELECT submitData.*,
-				  acceptedData.acc,
-				  acceptedData.total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS submit_count
-				  FROM pc_submit pcsub,
-					( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
-					) problist
-				  WHERE problist.problem_id = pcsub.problem_id AND pcsub.submit_time < ' . $freezetime . '
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) submitData
-				LEFT JOIN
-				  (SELECT freshData.*,
-					totalAccepted.total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) freshData
-				  LEFT JOIN
-					(SELECT dataAcc.participant_id,
-					  SUM(dataAcc.acc_count) AS total_acc
-					FROM
-					  (SELECT pcsub.problem_id,
-						pcsub.participant_id,
-						COUNT(*) AS acc,
-						1        AS acc_count
-					  FROM pc_submit pcsub
-					  WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-					  GROUP BY pcsub.problem_id,
-						pcsub.participant_id
-					  ) dataAcc
-					GROUP BY dataAcc.participant_id
-					) totalAccepted
-				  ON totalAccepted.participant_id         = freshData.participant_id
-				  ) acceptedData ON submitData.problem_id = acceptedData.problem_id
-				AND submitData.participant_id             = acceptedData.participant_id
-				) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
-			  AND submitLogic.participant_id              = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcsub.problem_id,
-				  pcsub.participant_id,
-				  MAX(submit_time) AS maxtime
-				FROM pc_submit pcsub
-				WHERE pcsub.submit_time < ' . $freezetime . '
-				GROUP BY pcsub.problem_id,
-				  pcsub.participant_id
-				) submitTime
-			  ON submitTime.problem_id      = allProblem.problem_id
-			  AND submitTime.participant_id = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcc.contest_id,
-				  pcc.contest_start,
-				  pcc.contest_penalty
-				FROM pc_contest pcc
-				) contestData
-			  ON contestData.contest_id = allProblem.contest_id
-			  LEFT JOIN
-				(SELECT freshData.participant_id,
-				  MAX(totalAccepted.total_acc) AS total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS acc,
-					1        AS acc_count
-				  FROM pc_submit pcsub
-				  WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) freshData
-				LEFT JOIN
-				  (SELECT dataAcc.participant_id,
-					SUM(dataAcc.acc_count) AS total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) dataAcc
-				  GROUP BY dataAcc.participant_id
-				  ) totalAccepted
-				ON totalAccepted.participant_id = freshData.participant_id
-				GROUP BY freshData.participant_id
-				) accCounter ON accCounter.participant_id = allProblem.participant_id
-			  GROUP BY allProblem.participant_id
-			  ) sumData ON sumData.participant_id = realData.participant_id
-			WHERE sumData.total_time = 0
-			ORDER BY realData.total_acc DESC, sumData.total_time, realData.user_name, realData.problem_id
-		';
+      SELECT realData.*,
+        sumData.total_time
+      FROM
+        (SELECT allProblem.problem_id,
+        allProblem.participant_id,
+        pcpar.user_name,
+        IFNULL(submitLogic.submit_count,0)                               AS submit_count,
+        IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty AS penalty,
+        IFNULL(submitLogic.acc,0)                                        AS acc,
+        IFNULL(accCounter.total_acc,0)                                   AS total_acc,
+        IFNULL(submitTime.maxtime, 0)                                    AS maxtime,
+        contestData.contest_start,
+        IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty) AS fixtime
+        FROM
+        (SELECT pcprob.problem_id,
+          pcp.participant_id,
+          pcp.contest_id
+        FROM pc_problem pcprob,
+          pc_participant pcp,
+        pc_detcon pcd
+        WHERE pcd.contest_id = ' . $contestid . '
+        AND pcp.contest_id      = ' . $contestid . '
+        AND pcprob.problem_id = pcd.problem_id
+        ) allProblem
+        LEFT JOIN
+        ( SELECT * FROM pc_participant
+        ) pcpar
+        ON pcpar.participant_id = allProblem.participant_id
+        LEFT JOIN
+        (SELECT submitData.*,
+          acceptedData.acc,
+          acceptedData.total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS submit_count
+          FROM pc_submit pcsub,
+          ( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
+          ) problist
+          WHERE problist.problem_id = pcsub.problem_id AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) submitData
+        LEFT JOIN
+          (SELECT freshData.*,
+          totalAccepted.total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) freshData
+          LEFT JOIN
+          (SELECT dataAcc.participant_id,
+            SUM(dataAcc.acc_count) AS total_acc
+          FROM
+            (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+            FROM pc_submit pcsub
+            WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+            GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+            ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+          ON totalAccepted.participant_id         = freshData.participant_id
+          ) acceptedData ON submitData.problem_id = acceptedData.problem_id
+        AND submitData.participant_id             = acceptedData.participant_id
+        ) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
+        AND submitLogic.participant_id              = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          MAX(submit_time) AS maxtime
+        FROM pc_submit pcsub
+        WHERE pcsub.submit_time < ' . $freezetime . '
+        GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+        ) submitTime
+        ON submitTime.problem_id      = allProblem.problem_id
+        AND submitTime.participant_id = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcc.contest_id,
+          pcc.contest_start,
+          pcc.contest_penalty
+        FROM pc_contest pcc
+        ) contestData
+        ON contestData.contest_id = allProblem.contest_id
+        LEFT JOIN
+        (SELECT freshData.participant_id,
+          MAX(totalAccepted.total_acc) AS total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS acc,
+          1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) freshData
+        LEFT JOIN
+          (SELECT dataAcc.participant_id,
+          SUM(dataAcc.acc_count) AS total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+        ON totalAccepted.participant_id = freshData.participant_id
+        GROUP BY freshData.participant_id
+        ) accCounter ON accCounter.participant_id = allProblem.participant_id
+        ) realData
+      LEFT JOIN
+        (SELECT allProblem.participant_id,
+        SUM(IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty)) AS total_time
+        FROM
+        (SELECT pcprob.problem_id,
+          pcp.participant_id,
+          pcp.contest_id
+        FROM pc_problem pcprob,
+          pc_participant pcp,
+          pc_detcon pcd
+        WHERE pcd.contest_id = ' . $contestid . '
+        AND pcp.contest_id      = ' . $contestid . '
+        AND pcprob.problem_id = pcd.problem_id
+        ) allProblem
+        LEFT JOIN
+        (SELECT submitData.*,
+          acceptedData.acc,
+          acceptedData.total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS submit_count
+          FROM pc_submit pcsub,
+          ( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
+          ) problist
+          WHERE problist.problem_id = pcsub.problem_id AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) submitData
+        LEFT JOIN
+          (SELECT freshData.*,
+          totalAccepted.total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) freshData
+          LEFT JOIN
+          (SELECT dataAcc.participant_id,
+            SUM(dataAcc.acc_count) AS total_acc
+          FROM
+            (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+            FROM pc_submit pcsub
+            WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+            GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+            ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+          ON totalAccepted.participant_id         = freshData.participant_id
+          ) acceptedData ON submitData.problem_id = acceptedData.problem_id
+        AND submitData.participant_id             = acceptedData.participant_id
+        ) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
+        AND submitLogic.participant_id              = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          MAX(submit_time) AS maxtime
+        FROM pc_submit pcsub
+        WHERE pcsub.submit_time < ' . $freezetime . '
+        GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+        ) submitTime
+        ON submitTime.problem_id      = allProblem.problem_id
+        AND submitTime.participant_id = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcc.contest_id,
+          pcc.contest_start,
+          pcc.contest_penalty
+        FROM pc_contest pcc
+        ) contestData
+        ON contestData.contest_id = allProblem.contest_id
+        LEFT JOIN
+        (SELECT freshData.participant_id,
+          MAX(totalAccepted.total_acc) AS total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS acc,
+          1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) freshData
+        LEFT JOIN
+          (SELECT dataAcc.participant_id,
+          SUM(dataAcc.acc_count) AS total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0 AND pcsub.submit_time < ' . $freezetime . '
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+        ON totalAccepted.participant_id = freshData.participant_id
+        GROUP BY freshData.participant_id
+        ) accCounter ON accCounter.participant_id = allProblem.participant_id
+        GROUP BY allProblem.participant_id
+        ) sumData ON sumData.participant_id = realData.participant_id
+      WHERE sumData.total_time = 0
+      ORDER BY realData.total_acc DESC, sumData.total_time, realData.user_name, realData.problem_id
+    ';
 
         $qr   = $this->db->query($q);
         $qrno = $this->db->query($querynosubmit);
@@ -796,488 +796,488 @@ class Contestmodel extends CI_Model
         $rotator   = $CI->Participantmodel->getProblemNumber($contestid);
 
         $q = '
-			SELECT realData.*,
-			  sumData.total_time
-			FROM
-			  (SELECT allProblem.problem_id,
-				allProblem.participant_id,
-				pcpar.user_name,
-				IFNULL(submitLogic.submit_count,0)                               AS submit_count,
-				IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty AS penalty,
-				IFNULL(submitLogic.acc,0)                                        AS acc,
-				IFNULL(accCounter.total_acc,0)                                   AS total_acc,
-				IFNULL(submitTime.maxtime, 0)                                    AS maxtime,
-				contestData.contest_start,
-				IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty) AS fixtime
-			  FROM
-				(SELECT pcprob.problem_id,
-				  pcp.participant_id,
-				  pcp.contest_id
-				FROM pc_problem pcprob,
-				  pc_participant pcp,
-				  pc_detcon pcd
-				WHERE pcd.contest_id = ' . $contestid . '
-				AND pcp.contest_id      = ' . $contestid . '
-				AND pcprob.problem_id = pcd.problem_id
-				) allProblem
-			  LEFT JOIN
-				( SELECT * FROM pc_participant
-				) pcpar
-			  ON pcpar.participant_id = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT submitData.*,
-				  acceptedData.acc,
-				  acceptedData.total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS submit_count
-				  FROM pc_submit pcsub,
-					( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
-					) problist
-				  WHERE problist.problem_id = pcsub.problem_id
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) submitData
-				LEFT JOIN
-				  (SELECT freshData.*,
-					totalAccepted.total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) freshData
-				  LEFT JOIN
-					(SELECT dataAcc.participant_id,
-					  SUM(dataAcc.acc_count) AS total_acc
-					FROM
-					  (SELECT pcsub.problem_id,
-						pcsub.participant_id,
-						COUNT(*) AS acc,
-						1        AS acc_count
-					  FROM pc_submit pcsub
-					  WHERE pcsub.status_id = 0
-					  GROUP BY pcsub.problem_id,
-						pcsub.participant_id
-					  ) dataAcc
-					GROUP BY dataAcc.participant_id
-					) totalAccepted
-				  ON totalAccepted.participant_id         = freshData.participant_id
-				  ) acceptedData ON submitData.problem_id = acceptedData.problem_id
-				AND submitData.participant_id             = acceptedData.participant_id
-				) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
-			  AND submitLogic.participant_id              = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcsub.problem_id,
-				  pcsub.participant_id,
-				  MAX(submit_time) AS maxtime
-				FROM pc_submit pcsub
-				GROUP BY pcsub.problem_id,
-				  pcsub.participant_id
-				) submitTime
-			  ON submitTime.problem_id      = allProblem.problem_id
-			  AND submitTime.participant_id = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcc.contest_id,
-				  pcc.contest_start,
-				  pcc.contest_penalty
-				FROM pc_contest pcc
-				) contestData
-			  ON contestData.contest_id = allProblem.contest_id
-			  LEFT JOIN
-				(SELECT freshData.participant_id,
-				  MAX(totalAccepted.total_acc) AS total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS acc,
-					1        AS acc_count
-				  FROM pc_submit pcsub
-				  WHERE pcsub.status_id = 0
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) freshData
-				LEFT JOIN
-				  (SELECT dataAcc.participant_id,
-					SUM(dataAcc.acc_count) AS total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) dataAcc
-				  GROUP BY dataAcc.participant_id
-				  ) totalAccepted
-				ON totalAccepted.participant_id = freshData.participant_id
-				GROUP BY freshData.participant_id
-				) accCounter ON accCounter.participant_id = allProblem.participant_id
-			  ) realData
-			LEFT JOIN
-			  (SELECT allProblem.participant_id,
-				SUM(IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty)) AS total_time
-			  FROM
-				(SELECT pcprob.problem_id,
-				  pcp.participant_id,
-				  pcp.contest_id
-				FROM pc_problem pcprob,
-				  pc_participant pcp,
-				  pc_detcon pcd
-				WHERE pcd.contest_id = ' . $contestid . '
-				AND pcp.contest_id      = ' . $contestid . '
-				AND pcprob.problem_id = pcd.problem_id
-				) allProblem
-			  LEFT JOIN
-				(SELECT submitData.*,
-				  acceptedData.acc,
-				  acceptedData.total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS submit_count
-				  FROM pc_submit pcsub,
-					( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
-					) problist
-				  WHERE problist.problem_id = pcsub.problem_id
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) submitData
-				LEFT JOIN
-				  (SELECT freshData.*,
-					totalAccepted.total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) freshData
-				  LEFT JOIN
-					(SELECT dataAcc.participant_id,
-					  SUM(dataAcc.acc_count) AS total_acc
-					FROM
-					  (SELECT pcsub.problem_id,
-						pcsub.participant_id,
-						COUNT(*) AS acc,
-						1        AS acc_count
-					  FROM pc_submit pcsub
-					  WHERE pcsub.status_id = 0
-					  GROUP BY pcsub.problem_id,
-						pcsub.participant_id
-					  ) dataAcc
-					GROUP BY dataAcc.participant_id
-					) totalAccepted
-				  ON totalAccepted.participant_id         = freshData.participant_id
-				  ) acceptedData ON submitData.problem_id = acceptedData.problem_id
-				AND submitData.participant_id             = acceptedData.participant_id
-				) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
-			  AND submitLogic.participant_id              = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcsub.problem_id,
-				  pcsub.participant_id,
-				  MAX(submit_time) AS maxtime
-				FROM pc_submit pcsub
-				GROUP BY pcsub.problem_id,
-				  pcsub.participant_id
-				) submitTime
-			  ON submitTime.problem_id      = allProblem.problem_id
-			  AND submitTime.participant_id = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcc.contest_id,
-				  pcc.contest_start,
-				  pcc.contest_penalty
-				FROM pc_contest pcc
-				) contestData
-			  ON contestData.contest_id = allProblem.contest_id
-			  LEFT JOIN
-				(SELECT freshData.participant_id,
-				  MAX(totalAccepted.total_acc) AS total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS acc,
-					1        AS acc_count
-				  FROM pc_submit pcsub
-				  WHERE pcsub.status_id = 0
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) freshData
-				LEFT JOIN
-				  (SELECT dataAcc.participant_id,
-					SUM(dataAcc.acc_count) AS total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) dataAcc
-				  GROUP BY dataAcc.participant_id
-				  ) totalAccepted
-				ON totalAccepted.participant_id = freshData.participant_id
-				GROUP BY freshData.participant_id
-				) accCounter ON accCounter.participant_id = allProblem.participant_id
-			  GROUP BY allProblem.participant_id
-			  ) sumData ON sumData.participant_id = realData.participant_id
-			WHERE sumData.total_time > 0
-			ORDER BY realData.total_acc DESC, sumData.total_time, realData.user_name, realData.problem_id
-		';
+      SELECT realData.*,
+        sumData.total_time
+      FROM
+        (SELECT allProblem.problem_id,
+        allProblem.participant_id,
+        pcpar.user_name,
+        IFNULL(submitLogic.submit_count,0)                               AS submit_count,
+        IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty AS penalty,
+        IFNULL(submitLogic.acc,0)                                        AS acc,
+        IFNULL(accCounter.total_acc,0)                                   AS total_acc,
+        IFNULL(submitTime.maxtime, 0)                                    AS maxtime,
+        contestData.contest_start,
+        IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty) AS fixtime
+        FROM
+        (SELECT pcprob.problem_id,
+          pcp.participant_id,
+          pcp.contest_id
+        FROM pc_problem pcprob,
+          pc_participant pcp,
+          pc_detcon pcd
+        WHERE pcd.contest_id = ' . $contestid . '
+        AND pcp.contest_id      = ' . $contestid . '
+        AND pcprob.problem_id = pcd.problem_id
+        ) allProblem
+        LEFT JOIN
+        ( SELECT * FROM pc_participant
+        ) pcpar
+        ON pcpar.participant_id = allProblem.participant_id
+        LEFT JOIN
+        (SELECT submitData.*,
+          acceptedData.acc,
+          acceptedData.total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS submit_count
+          FROM pc_submit pcsub,
+          ( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
+          ) problist
+          WHERE problist.problem_id = pcsub.problem_id
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) submitData
+        LEFT JOIN
+          (SELECT freshData.*,
+          totalAccepted.total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) freshData
+          LEFT JOIN
+          (SELECT dataAcc.participant_id,
+            SUM(dataAcc.acc_count) AS total_acc
+          FROM
+            (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+            FROM pc_submit pcsub
+            WHERE pcsub.status_id = 0
+            GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+            ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+          ON totalAccepted.participant_id         = freshData.participant_id
+          ) acceptedData ON submitData.problem_id = acceptedData.problem_id
+        AND submitData.participant_id             = acceptedData.participant_id
+        ) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
+        AND submitLogic.participant_id              = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          MAX(submit_time) AS maxtime
+        FROM pc_submit pcsub
+        GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+        ) submitTime
+        ON submitTime.problem_id      = allProblem.problem_id
+        AND submitTime.participant_id = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcc.contest_id,
+          pcc.contest_start,
+          pcc.contest_penalty
+        FROM pc_contest pcc
+        ) contestData
+        ON contestData.contest_id = allProblem.contest_id
+        LEFT JOIN
+        (SELECT freshData.participant_id,
+          MAX(totalAccepted.total_acc) AS total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS acc,
+          1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) freshData
+        LEFT JOIN
+          (SELECT dataAcc.participant_id,
+          SUM(dataAcc.acc_count) AS total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+        ON totalAccepted.participant_id = freshData.participant_id
+        GROUP BY freshData.participant_id
+        ) accCounter ON accCounter.participant_id = allProblem.participant_id
+        ) realData
+      LEFT JOIN
+        (SELECT allProblem.participant_id,
+        SUM(IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty)) AS total_time
+        FROM
+        (SELECT pcprob.problem_id,
+          pcp.participant_id,
+          pcp.contest_id
+        FROM pc_problem pcprob,
+          pc_participant pcp,
+          pc_detcon pcd
+        WHERE pcd.contest_id = ' . $contestid . '
+        AND pcp.contest_id      = ' . $contestid . '
+        AND pcprob.problem_id = pcd.problem_id
+        ) allProblem
+        LEFT JOIN
+        (SELECT submitData.*,
+          acceptedData.acc,
+          acceptedData.total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS submit_count
+          FROM pc_submit pcsub,
+          ( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
+          ) problist
+          WHERE problist.problem_id = pcsub.problem_id
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) submitData
+        LEFT JOIN
+          (SELECT freshData.*,
+          totalAccepted.total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) freshData
+          LEFT JOIN
+          (SELECT dataAcc.participant_id,
+            SUM(dataAcc.acc_count) AS total_acc
+          FROM
+            (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+            FROM pc_submit pcsub
+            WHERE pcsub.status_id = 0
+            GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+            ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+          ON totalAccepted.participant_id         = freshData.participant_id
+          ) acceptedData ON submitData.problem_id = acceptedData.problem_id
+        AND submitData.participant_id             = acceptedData.participant_id
+        ) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
+        AND submitLogic.participant_id              = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          MAX(submit_time) AS maxtime
+        FROM pc_submit pcsub
+        GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+        ) submitTime
+        ON submitTime.problem_id      = allProblem.problem_id
+        AND submitTime.participant_id = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcc.contest_id,
+          pcc.contest_start,
+          pcc.contest_penalty
+        FROM pc_contest pcc
+        ) contestData
+        ON contestData.contest_id = allProblem.contest_id
+        LEFT JOIN
+        (SELECT freshData.participant_id,
+          MAX(totalAccepted.total_acc) AS total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS acc,
+          1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) freshData
+        LEFT JOIN
+          (SELECT dataAcc.participant_id,
+          SUM(dataAcc.acc_count) AS total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+        ON totalAccepted.participant_id = freshData.participant_id
+        GROUP BY freshData.participant_id
+        ) accCounter ON accCounter.participant_id = allProblem.participant_id
+        GROUP BY allProblem.participant_id
+        ) sumData ON sumData.participant_id = realData.participant_id
+      WHERE sumData.total_time > 0
+      ORDER BY realData.total_acc DESC, sumData.total_time, realData.user_name, realData.problem_id
+    ';
 
         $querynosubmit = '
-			SELECT realData.*,
-			  sumData.total_time
-			FROM
-			  (SELECT allProblem.problem_id,
-				allProblem.participant_id,
-				pcpar.user_name,
-				IFNULL(submitLogic.submit_count,0)                               AS submit_count,
-				IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty AS penalty,
-				IFNULL(submitLogic.acc,0)                                        AS acc,
-				IFNULL(accCounter.total_acc,0)                                   AS total_acc,
-				IFNULL(submitTime.maxtime, 0)                                    AS maxtime,
-				contestData.contest_start,
-				IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty) AS fixtime
-			  FROM
-				(SELECT pcprob.problem_id,
-				  pcp.participant_id,
-				  pcp.contest_id
-				FROM pc_problem pcprob,
-				  pc_participant pcp,
-				  pc_detcon pcd
-				WHERE pcd.contest_id = ' . $contestid . '
-				AND pcp.contest_id      = ' . $contestid . '
-				AND pcprob.problem_id = pcd.problem_id
-				) allProblem
-			  LEFT JOIN
-				( SELECT * FROM pc_participant
-				) pcpar
-			  ON pcpar.participant_id = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT submitData.*,
-				  acceptedData.acc,
-				  acceptedData.total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS submit_count
-				  FROM pc_submit pcsub,
-					( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
-					) problist
-				  WHERE problist.problem_id = pcsub.problem_id
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) submitData
-				LEFT JOIN
-				  (SELECT freshData.*,
-					totalAccepted.total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) freshData
-				  LEFT JOIN
-					(SELECT dataAcc.participant_id,
-					  SUM(dataAcc.acc_count) AS total_acc
-					FROM
-					  (SELECT pcsub.problem_id,
-						pcsub.participant_id,
-						COUNT(*) AS acc,
-						1        AS acc_count
-					  FROM pc_submit pcsub
-					  WHERE pcsub.status_id = 0
-					  GROUP BY pcsub.problem_id,
-						pcsub.participant_id
-					  ) dataAcc
-					GROUP BY dataAcc.participant_id
-					) totalAccepted
-				  ON totalAccepted.participant_id         = freshData.participant_id
-				  ) acceptedData ON submitData.problem_id = acceptedData.problem_id
-				AND submitData.participant_id             = acceptedData.participant_id
-				) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
-			  AND submitLogic.participant_id              = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcsub.problem_id,
-				  pcsub.participant_id,
-				  MAX(submit_time) AS maxtime
-				FROM pc_submit pcsub
-				GROUP BY pcsub.problem_id,
-				  pcsub.participant_id
-				) submitTime
-			  ON submitTime.problem_id      = allProblem.problem_id
-			  AND submitTime.participant_id = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcc.contest_id,
-				  pcc.contest_start,
-				  pcc.contest_penalty
-				FROM pc_contest pcc
-				) contestData
-			  ON contestData.contest_id = allProblem.contest_id
-			  LEFT JOIN
-				(SELECT freshData.participant_id,
-				  MAX(totalAccepted.total_acc) AS total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS acc,
-					1        AS acc_count
-				  FROM pc_submit pcsub
-				  WHERE pcsub.status_id = 0
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) freshData
-				LEFT JOIN
-				  (SELECT dataAcc.participant_id,
-					SUM(dataAcc.acc_count) AS total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) dataAcc
-				  GROUP BY dataAcc.participant_id
-				  ) totalAccepted
-				ON totalAccepted.participant_id = freshData.participant_id
-				GROUP BY freshData.participant_id
-				) accCounter ON accCounter.participant_id = allProblem.participant_id
-			  ) realData
-			LEFT JOIN
-			  (SELECT allProblem.participant_id,
-				SUM(IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty)) AS total_time
-			  FROM
-				(SELECT pcprob.problem_id,
-				  pcp.participant_id,
-				  pcp.contest_id
-				FROM pc_problem pcprob,
-				  pc_participant pcp,
-				  pc_detcon pcd
-				WHERE pcd.contest_id = ' . $contestid . '
-				AND pcp.contest_id      = ' . $contestid . '
-				AND pcprob.problem_id = pcd.problem_id
-				) allProblem
-			  LEFT JOIN
-				(SELECT submitData.*,
-				  acceptedData.acc,
-				  acceptedData.total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS submit_count
-				  FROM pc_submit pcsub,
-					( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
-					) problist
-				  WHERE problist.problem_id = pcsub.problem_id
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) submitData
-				LEFT JOIN
-				  (SELECT freshData.*,
-					totalAccepted.total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) freshData
-				  LEFT JOIN
-					(SELECT dataAcc.participant_id,
-					  SUM(dataAcc.acc_count) AS total_acc
-					FROM
-					  (SELECT pcsub.problem_id,
-						pcsub.participant_id,
-						COUNT(*) AS acc,
-						1        AS acc_count
-					  FROM pc_submit pcsub
-					  WHERE pcsub.status_id = 0
-					  GROUP BY pcsub.problem_id,
-						pcsub.participant_id
-					  ) dataAcc
-					GROUP BY dataAcc.participant_id
-					) totalAccepted
-				  ON totalAccepted.participant_id         = freshData.participant_id
-				  ) acceptedData ON submitData.problem_id = acceptedData.problem_id
-				AND submitData.participant_id             = acceptedData.participant_id
-				) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
-			  AND submitLogic.participant_id              = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcsub.problem_id,
-				  pcsub.participant_id,
-				  MAX(submit_time) AS maxtime
-				FROM pc_submit pcsub
-				GROUP BY pcsub.problem_id,
-				  pcsub.participant_id
-				) submitTime
-			  ON submitTime.problem_id      = allProblem.problem_id
-			  AND submitTime.participant_id = allProblem.participant_id
-			  LEFT JOIN
-				(SELECT pcc.contest_id,
-				  pcc.contest_start,
-				  pcc.contest_penalty
-				FROM pc_contest pcc
-				) contestData
-			  ON contestData.contest_id = allProblem.contest_id
-			  LEFT JOIN
-				(SELECT freshData.participant_id,
-				  MAX(totalAccepted.total_acc) AS total_acc
-				FROM
-				  (SELECT pcsub.problem_id,
-					pcsub.participant_id,
-					COUNT(*) AS acc,
-					1        AS acc_count
-				  FROM pc_submit pcsub
-				  WHERE pcsub.status_id = 0
-				  GROUP BY pcsub.problem_id,
-					pcsub.participant_id
-				  ) freshData
-				LEFT JOIN
-				  (SELECT dataAcc.participant_id,
-					SUM(dataAcc.acc_count) AS total_acc
-				  FROM
-					(SELECT pcsub.problem_id,
-					  pcsub.participant_id,
-					  COUNT(*) AS acc,
-					  1        AS acc_count
-					FROM pc_submit pcsub
-					WHERE pcsub.status_id = 0
-					GROUP BY pcsub.problem_id,
-					  pcsub.participant_id
-					) dataAcc
-				  GROUP BY dataAcc.participant_id
-				  ) totalAccepted
-				ON totalAccepted.participant_id = freshData.participant_id
-				GROUP BY freshData.participant_id
-				) accCounter ON accCounter.participant_id = allProblem.participant_id
-			  GROUP BY allProblem.participant_id
-			  ) sumData ON sumData.participant_id = realData.participant_id
-			WHERE sumData.total_time = 0
-			ORDER BY realData.total_acc DESC, sumData.total_time, realData.user_name, realData.problem_id
-		';
+      SELECT realData.*,
+        sumData.total_time
+      FROM
+        (SELECT allProblem.problem_id,
+        allProblem.participant_id,
+        pcpar.user_name,
+        IFNULL(submitLogic.submit_count,0)                               AS submit_count,
+        IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty AS penalty,
+        IFNULL(submitLogic.acc,0)                                        AS acc,
+        IFNULL(accCounter.total_acc,0)                                   AS total_acc,
+        IFNULL(submitTime.maxtime, 0)                                    AS maxtime,
+        contestData.contest_start,
+        IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty) AS fixtime
+        FROM
+        (SELECT pcprob.problem_id,
+          pcp.participant_id,
+          pcp.contest_id
+        FROM pc_problem pcprob,
+          pc_participant pcp,
+          pc_detcon pcd
+        WHERE pcd.contest_id = ' . $contestid . '
+        AND pcp.contest_id      = ' . $contestid . '
+        AND pcprob.problem_id = pcd.problem_id
+        ) allProblem
+        LEFT JOIN
+        ( SELECT * FROM pc_participant
+        ) pcpar
+        ON pcpar.participant_id = allProblem.participant_id
+        LEFT JOIN
+        (SELECT submitData.*,
+          acceptedData.acc,
+          acceptedData.total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS submit_count
+          FROM pc_submit pcsub,
+          ( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
+          ) problist
+          WHERE problist.problem_id = pcsub.problem_id
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) submitData
+        LEFT JOIN
+          (SELECT freshData.*,
+          totalAccepted.total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) freshData
+          LEFT JOIN
+          (SELECT dataAcc.participant_id,
+            SUM(dataAcc.acc_count) AS total_acc
+          FROM
+            (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+            FROM pc_submit pcsub
+            WHERE pcsub.status_id = 0
+            GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+            ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+          ON totalAccepted.participant_id         = freshData.participant_id
+          ) acceptedData ON submitData.problem_id = acceptedData.problem_id
+        AND submitData.participant_id             = acceptedData.participant_id
+        ) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
+        AND submitLogic.participant_id              = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          MAX(submit_time) AS maxtime
+        FROM pc_submit pcsub
+        GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+        ) submitTime
+        ON submitTime.problem_id      = allProblem.problem_id
+        AND submitTime.participant_id = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcc.contest_id,
+          pcc.contest_start,
+          pcc.contest_penalty
+        FROM pc_contest pcc
+        ) contestData
+        ON contestData.contest_id = allProblem.contest_id
+        LEFT JOIN
+        (SELECT freshData.participant_id,
+          MAX(totalAccepted.total_acc) AS total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS acc,
+          1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) freshData
+        LEFT JOIN
+          (SELECT dataAcc.participant_id,
+          SUM(dataAcc.acc_count) AS total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+        ON totalAccepted.participant_id = freshData.participant_id
+        GROUP BY freshData.participant_id
+        ) accCounter ON accCounter.participant_id = allProblem.participant_id
+        ) realData
+      LEFT JOIN
+        (SELECT allProblem.participant_id,
+        SUM(IF((IFNULL(submitTime.maxtime, 0) - contestData.contest_start) < 0, 0, (IFNULL(submitTime.maxtime, 0) - contestData.contest_start)) + (IFNULL(submitLogic.submit_count,0) * contestData.contest_penalty) - IF(IFNULL(submitLogic.acc,0) = 0, 0, contestData.contest_penalty)) AS total_time
+        FROM
+        (SELECT pcprob.problem_id,
+          pcp.participant_id,
+          pcp.contest_id
+        FROM pc_problem pcprob,
+          pc_participant pcp,
+          pc_detcon pcd
+        WHERE pcd.contest_id = ' . $contestid . '
+        AND pcp.contest_id      = ' . $contestid . '
+        AND pcprob.problem_id = pcd.problem_id
+        ) allProblem
+        LEFT JOIN
+        (SELECT submitData.*,
+          acceptedData.acc,
+          acceptedData.total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS submit_count
+          FROM pc_submit pcsub,
+          ( SELECT pcprob.problem_id,pcprob.problem_title,pcprob.problem_content,pcprob.problem_creator,pcprob.problem_inputcase,pcprob.problem_outpucase,pcprob.problem_runtime,pcprob.problem_memory,pcprob.problem_tollerance FROM pc_problem pcprob, pc_detcon pcd WHERE pcd.contest_id = ' . $contestid . ' and pcprob.problem_id = pcd.problem_id
+          ) problist
+          WHERE problist.problem_id = pcsub.problem_id
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) submitData
+        LEFT JOIN
+          (SELECT freshData.*,
+          totalAccepted.total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) freshData
+          LEFT JOIN
+          (SELECT dataAcc.participant_id,
+            SUM(dataAcc.acc_count) AS total_acc
+          FROM
+            (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+            FROM pc_submit pcsub
+            WHERE pcsub.status_id = 0
+            GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+            ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+          ON totalAccepted.participant_id         = freshData.participant_id
+          ) acceptedData ON submitData.problem_id = acceptedData.problem_id
+        AND submitData.participant_id             = acceptedData.participant_id
+        ) submitLogic ON submitLogic.problem_id   = allProblem.problem_id
+        AND submitLogic.participant_id              = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          MAX(submit_time) AS maxtime
+        FROM pc_submit pcsub
+        GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+        ) submitTime
+        ON submitTime.problem_id      = allProblem.problem_id
+        AND submitTime.participant_id = allProblem.participant_id
+        LEFT JOIN
+        (SELECT pcc.contest_id,
+          pcc.contest_start,
+          pcc.contest_penalty
+        FROM pc_contest pcc
+        ) contestData
+        ON contestData.contest_id = allProblem.contest_id
+        LEFT JOIN
+        (SELECT freshData.participant_id,
+          MAX(totalAccepted.total_acc) AS total_acc
+        FROM
+          (SELECT pcsub.problem_id,
+          pcsub.participant_id,
+          COUNT(*) AS acc,
+          1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0
+          GROUP BY pcsub.problem_id,
+          pcsub.participant_id
+          ) freshData
+        LEFT JOIN
+          (SELECT dataAcc.participant_id,
+          SUM(dataAcc.acc_count) AS total_acc
+          FROM
+          (SELECT pcsub.problem_id,
+            pcsub.participant_id,
+            COUNT(*) AS acc,
+            1        AS acc_count
+          FROM pc_submit pcsub
+          WHERE pcsub.status_id = 0
+          GROUP BY pcsub.problem_id,
+            pcsub.participant_id
+          ) dataAcc
+          GROUP BY dataAcc.participant_id
+          ) totalAccepted
+        ON totalAccepted.participant_id = freshData.participant_id
+        GROUP BY freshData.participant_id
+        ) accCounter ON accCounter.participant_id = allProblem.participant_id
+        GROUP BY allProblem.participant_id
+        ) sumData ON sumData.participant_id = realData.participant_id
+      WHERE sumData.total_time = 0
+      ORDER BY realData.total_acc DESC, sumData.total_time, realData.user_name, realData.problem_id
+    ';
 
         $qr   = $this->db->query($q);
         $qrno = $this->db->query($querynosubmit);
@@ -1603,11 +1603,16 @@ class Contestmodel extends CI_Model
 
     public function getProbsetStatus()
     {
-        $user          = $this->session->userdata('username');
-        $contestid     = $this->session->userdata('contestid');
-        $q             = "select PROBSET_STATUS from pc_probset where USER_NAME = '$user' and CONTEST_ID = $contestid";
-        $probsetstatus = $this->db->query($q)->row()->PROBSET_STATUS;
-        return $probsetstatus;
+        $user      = $this->session->userdata('username');
+        $contestid = $this->session->userdata('contestid');
+        $q         = "select PROBSET_STATUS from pc_probset where USER_NAME = '$user' and CONTEST_ID = $contestid";
+        $qr        = $this->db->query($q);
+        if ($qr->num_rows() > 0) {
+            $row = $qr->first_row();
+            return $row->PROBSET_STATUS;
+        } else {
+            return 1;
+        }
     }
 
     public function getProbsetId()
