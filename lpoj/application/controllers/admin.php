@@ -158,38 +158,38 @@ class Admin extends CI_Controller
             $pcreator = $this->input->post('pcreator');
             $pcontent = $this->input->post('pcontent');
 
-            if (isset($_FILES["picase"]["error"]) && $_FILES["picase"]["error"] > 0) {
-                if (file_exists(COMPILER_FOLDER . "inputcase/testCase" . $pid)) {
-                    echo $_FILES["file"]["name"] . " already exists. ";
-                } else {
-                    $myFile = COMPILER_FOLDER . "inputcase/testCase" . $pid;
-                    $fh     = fopen($myFile, 'w');
-                    fwrite($fh, "");
-                    fclose($fh);
-                    exec("fromdos " . COMPILER_FOLDER . "inputcase/testCase" . $pid);
-                }
-            } else {
-                move_uploaded_file($_FILES["picase"]["tmp_name"],
-                    COMPILER_FOLDER . "inputcase/testCase" . $pid);
-                exec("fromdos " . COMPILER_FOLDER . "inputcase/testCase" . $pid);
-            }
+            // if (isset($_FILES["picase"]["error"]) && $_FILES["picase"]["error"] > 0) {
+            //     if (file_exists(COMPILER_FOLDER . "inputcase/testCase" . $pid)) {
+            //         echo $_FILES["file"]["name"] . " already exists. ";
+            //     } else {
+            //         $myFile = COMPILER_FOLDER . "inputcase/testCase" . $pid;
+            //         $fh     = fopen($myFile, 'w');
+            //         fwrite($fh, "");
+            //         fclose($fh);
+            //         exec("fromdos " . COMPILER_FOLDER . "inputcase/testCase" . $pid);
+            //     }
+            // } else {
+            //     move_uploaded_file($_FILES["picase"]["tmp_name"],
+            //         COMPILER_FOLDER . "inputcase/testCase" . $pid);
+            //     exec("fromdos " . COMPILER_FOLDER . "inputcase/testCase" . $pid);
+            // }
 
-            if ($_FILES["pocase"]["error"] > 0) {
-                if (file_exists(COMPILER_FOLDER . "outputcase/hasil" . $pid)) {
-                    echo $_FILES["file"]["name"] . " already exists. ";
-                } else {
-                    $myFile = COMPILER_FOLDER . "outputcase/hasil" . $pid;
-                    $fh     = fopen($myFile, 'w');
-                    fwrite($fh, "");
-                    fclose($fh);
-                    exec("fromdos " . COMPILER_FOLDER . "outputcase/hasil" . $pid);
-                }
+            // if ($_FILES["pocase"]["error"] > 0) {
+            //     if (file_exists(COMPILER_FOLDER . "outputcase/hasil" . $pid)) {
+            //         echo $_FILES["file"]["name"] . " already exists. ";
+            //     } else {
+            //         $myFile = COMPILER_FOLDER . "outputcase/hasil" . $pid;
+            //         $fh     = fopen($myFile, 'w');
+            //         fwrite($fh, "");
+            //         fclose($fh);
+            //         exec("fromdos " . COMPILER_FOLDER . "outputcase/hasil" . $pid);
+            //     }
 
-            } else {
-                move_uploaded_file($_FILES["pocase"]["tmp_name"],
-                    COMPILER_FOLDER . "outputcase/hasil" . $pid);
-                exec("fromdos " . COMPILER_FOLDER . "outputcase/hasil" . $pid);
-            }
+            // } else {
+            //     move_uploaded_file($_FILES["pocase"]["tmp_name"],
+            //         COMPILER_FOLDER . "outputcase/hasil" . $pid);
+            //     exec("fromdos " . COMPILER_FOLDER . "outputcase/hasil" . $pid);
+            // }
 
             $picase = "testCase" . $pid;
             $pocase = "hasil" . $pid;
