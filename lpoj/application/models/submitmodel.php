@@ -22,14 +22,14 @@ class Submitmodel extends CI_Model
     {
         $participant = $this->session->userdata('participantid');
         $q           = '
-			SELECT pcpar.user_name, pcs.submit_hash, pcs.problem_id, pcs.submit_id, pcprob.problem_title, pcs.submit_filename, pcs.submit_time, pcs.score, pcst.status_id, pcst.status_name
-			FROM pc_submit pcs, pc_problem pcprob, pc_status pcst,pc_participant pcpar
-			WHERE pcs.participant_id = ' . $participant . '
-			AND pcpar.participant_id = pcs.participant_id
-			AND pcprob.problem_id = pcs.problem_id
-			AND pcs.status_id = pcst.status_id
-			ORDER BY pcs.submit_time DESC
-		';
+            SELECT pcpar.user_name, pcs.submit_hash, pcs.problem_id, pcs.submit_id, pcprob.problem_title, pcs.submit_filename, pcs.submit_time, pcs.score, pcst.status_id, pcst.status_name
+            FROM pc_submit pcs, pc_problem pcprob, pc_status pcst,pc_participant pcpar
+            WHERE pcs.participant_id = ' . $participant . '
+            AND pcpar.participant_id = pcs.participant_id
+            AND pcprob.problem_id = pcs.problem_id
+            AND pcs.status_id = pcst.status_id
+            ORDER BY pcs.submit_time DESC
+        ';
         $qr = $this->db->query($q);
         echo "<table border='1' width='100%'><tr align='center' bgcolor='#F77A0C'><td style=\"color:#000\">ID #</td><td style=\"color:#000\">Submit Time</td><td style=\"color:#000\">Problem</td><td style=\"color:#000\">Verdict</td><td style=\"color:#000\"></td></tr>";
 
@@ -79,7 +79,7 @@ class Submitmodel extends CI_Model
     public function getSolutionVerdictById($id)
     {
         $query = $this->db->query("SELECT pcstat.status_name FROM pc_submit pcs, pc_status pcstat
-					WHERE pcs.SUBMIT_ID=$id AND pcstat.status_id=pcs.status_id");
+                    WHERE pcs.SUBMIT_ID=$id AND pcstat.status_id=pcs.status_id");
         $res = $query->result();
         return $res[0]->status_name;
     }
@@ -98,16 +98,16 @@ class Submitmodel extends CI_Model
     {
         $cid = $this->session->userdata('contestid');
         $q   = '
-			SELECT pcs.submit_id, pcprob.problem_title, pcs.submit_filename, pcs.submit_time, pcstat.status_name, pcu.user_name, pcs.submit_hash, pcs.problem_id, pcs.score, pcstat.status_id
-			FROM pc_submit pcs, pc_status pcstat, pc_problem pcprob, pc_participant pcpar, pc_user pcu
-			WHERE pcs.participant_id IN
-			(SELECT participant_id FROM pc_participant WHERE contest_id=' . $cid . ')
-			AND pcprob.problem_id = pcs.problem_id
-			AND pcpar.participant_id = pcs.participant_id
-			AND pcstat.status_id = pcs.status_id
-			AND pcpar.user_name = pcu.user_name
-			ORDER BY pcs.submit_id DESC
-		';
+            SELECT pcs.submit_id, pcprob.problem_title, pcs.submit_filename, pcs.submit_time, pcstat.status_name, pcu.user_name, pcs.submit_hash, pcs.problem_id, pcs.score, pcstat.status_id
+            FROM pc_submit pcs, pc_status pcstat, pc_problem pcprob, pc_participant pcpar, pc_user pcu
+            WHERE pcs.participant_id IN
+            (SELECT participant_id FROM pc_participant WHERE contest_id=' . $cid . ')
+            AND pcprob.problem_id = pcs.problem_id
+            AND pcpar.participant_id = pcs.participant_id
+            AND pcstat.status_id = pcs.status_id
+            AND pcpar.user_name = pcu.user_name
+            ORDER BY pcs.submit_id DESC
+        ';
         $qr = $this->db->query($q);
         echo "<table border='1' width='100%'><tr align='center' bgcolor='#F77A0C'><td>ID #</td><td>Username</td><td>Problem</td><td>Filename</td><td>Submit Time</td><td>Score</td></tr>";
 
@@ -159,18 +159,18 @@ class Submitmodel extends CI_Model
     {
         $cid = $this->session->userdata('contestid');
         $q   = '
-			SELECT pcs.submit_id, pcprob.problem_title, pcs.submit_filename, pcs.submit_time, pcstat.status_name, pcu.user_name, pcs.submit_hash, pcs.problem_id, pcs.score, pcstat.status_id
-			FROM pc_submit pcs, pc_status pcstat, pc_problem pcprob, pc_participant pcpar, pc_user pcu
-			WHERE pcs.participant_id IN
-			(SELECT participant_id FROM pc_participant WHERE contest_id=' . $cid . ')
-			AND pcprob.problem_id = pcs.problem_id
-			AND pcpar.participant_id = pcs.participant_id
-			AND pcstat.status_id = pcs.status_id
-			AND pcpar.user_name = pcu.user_name
-			AND pcprob.problem_id=' . $probid . '
-			AND pcstat.status_id = 7
-			ORDER BY pcs.submit_id DESC
-		';
+            SELECT pcs.submit_id, pcprob.problem_title, pcs.submit_filename, pcs.submit_time, pcstat.status_name, pcu.user_name, pcs.submit_hash, pcs.problem_id, pcs.score, pcstat.status_id
+            FROM pc_submit pcs, pc_status pcstat, pc_problem pcprob, pc_participant pcpar, pc_user pcu
+            WHERE pcs.participant_id IN
+            (SELECT participant_id FROM pc_participant WHERE contest_id=' . $cid . ')
+            AND pcprob.problem_id = pcs.problem_id
+            AND pcpar.participant_id = pcs.participant_id
+            AND pcstat.status_id = pcs.status_id
+            AND pcpar.user_name = pcu.user_name
+            AND pcprob.problem_id=' . $probid . '
+            AND pcstat.status_id = 7
+            ORDER BY pcs.submit_id DESC
+        ';
         $qr      = $this->db->query($q);
         $zip     = new ZipArchive;
         $pathzip = '/root/pclp/zip_temp/' . $cid . '-' . $probid . '.zip';
