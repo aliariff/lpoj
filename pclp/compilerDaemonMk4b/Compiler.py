@@ -73,7 +73,7 @@ class Compiler:
 
                 # self.db.query("UPDATE `pc_submit` SET `STATUS_ID` = '10' WHERE `pc_submit`.`SUBMIT_HASH` ='"+str(self.hashcode)+"'")
 
-                status = open('/root/pclp/status/' + self.waktu + '.'
+                status = open(paths.rootCompilerPath + 'status/' + self.waktu + '.'
                               + self.hashcode + '.0.10', 'w')
                 status.close()
 
@@ -95,7 +95,7 @@ class Compiler:
                    + '.' + self.filetype + ' ' + self.user + ' '
                    + self.soal + ' GAGAL, MALICIOUS CODE\n')
         logs.close()
-        status = open('/root/pclp/status/' + self.waktu + '.'
+        status = open(paths.rootCompilerPath + 'status/' + self.waktu + '.'
                       + self.hashcode + '.0.11.1', 'w')
         status.close()
         return
@@ -113,7 +113,7 @@ class Compiler:
         # CAMIN
             # self.db.query("UPDATE pc_submit SET SUBMIT_LOG = '2' WHERE SUBMIT_HASH ='"+str(self.hashcode)+"'")
 
-            status = open('/root/pclp/status/' + self.waktu + '.'
+            status = open(paths.rootCompilerPath + 'status/' + self.waktu + '.'
                           + self.hashcode + '.0.2.2', 'w')
             status.close()
 
@@ -159,7 +159,7 @@ class Compiler:
 
                     # self.db.query("UPDATE `pc_submit` SET `STATUS_ID` = '4' WHERE `pc_submit`.`SUBMIT_HASH` ='"+str(self.hashcode)+"'")
 
-                    status = open('/root/pclp/status/' + self.waktu
+                    status = open(paths.rootCompilerPath + 'status/' + self.waktu
                                   + '.' + self.hashcode + '.0', 'w')
                     status.close()
 
@@ -174,7 +174,7 @@ class Compiler:
                 memoryL.close()
 
                 counter = len([name for name in
-                              os.listdir('/root/pclp/inputcase/')
+                              os.listdir(paths.rootCompilerPath + 'inputcase/')
                               if self.soal in name])
                 total = 0
 
@@ -352,7 +352,7 @@ class Compiler:
                 # CAMIN
                 # self.db.query("UPDATE pc_submit SET SUBMIT_LOG = '"+submit_log+"' WHERE SUBMIT_HASH ='"+str(self.hashcode)+"'")
 
-                status = open('/root/pclp/status/' + self.waktu + '.'
+                status = open(paths.rootCompilerPath + 'status/' + self.waktu + '.'
                               + self.hashcode + '.' + str(total)
                               + status_log + submit_log, 'w')
                 status.close()

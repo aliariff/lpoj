@@ -37,4 +37,4 @@ while True:
         # if i%100==0:
         # ....db.close()
         # ....db = _mysql.connection(host="localhost",user="root",passwd="123",db="pclp")
-        # os.system("mv "+paths.statusPath+"/"+i+" /root/pclp/backup2")
+        # os.system("mv "+paths.statusPath+"/"+i+" "+paths.rootCompilerPath+"backup2")
