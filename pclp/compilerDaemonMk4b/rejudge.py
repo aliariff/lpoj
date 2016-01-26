@@ -7,6 +7,7 @@ import os
 import _mysql
 import re
 import sys
+import paths
 
 
 def strip(path):
@@ -20,20 +21,21 @@ def strip(path):
 
 
 while 1 == 1:
-    list1 = os.listdir('/root/pclp/backup/')
+    list1 = os.listdir(paths.rootCompilerPath + 'backup/')
     for i in list1:
         name = i.split('.')
         if name[0] == 'rejudge':
-            os.system('rm /root/pclp/backup/' + i)
-            list1 = sorted(os.listdir('/root/pclp/backup/' + name[1]
-                           + '/'))
+            os.system('rm ' + paths.rootCompilerPath + 'backup/' + i)
+            list1 = sorted(os.listdir(paths.rootCompilerPath + 'backup/'
+                            + name[1] + '/'))
             for i in list1:
                 print i
                 if i[0] == '.':
                     continue
-                comp = Compiler('/root/pclp/backup/' + name[1] + '/'
-                                + i)
-                if strip('/root/pclp/backup/' + name[1] + '/' + i):
+                comp = Compiler(paths.rootCompilerPath + 'backup/'
+                                + name[1] + '/' + i)
+                if strip(paths.rootCompilerPath + 'backup/' + name[1]
+                         + '/' + i):
                     comp.malcode()
                 else:
                     comp.compile()

@@ -8,6 +8,7 @@ import _mysql
 import re
 import sys
 import fnmatch
+import paths
 
 
 def strip(path):
@@ -40,22 +41,24 @@ if len(sys.argv) > 1:
 # db=_mysql.connection(host="localhost",user="root",passwd="123",db="pclp")
 
 while 1 == 1:
-    list1 = os.listdir('/root/pclp/upload/')
+    list1 = os.listdir(paths.rootCompilerPath + 'upload/')
     pat = re.compile('index.html')
     for i in list1:
         if i[0] == '.':
             continue
         if pat.search(i) != None:
             continue
-        comp = Compiler('/root/pclp/upload/' + i)
-        if strip('/root/pclp/upload/' + i):
+        comp = Compiler(paths.rootCompilerPath + 'upload/' + i)
+        if strip(paths.rootCompilerPath + 'upload/' + i):
             comp.malcode()
         else:
             comp.compile()
             g = comp.test()
-            os.system('mkdir /root/pclp/backup/' + comp.soal)
-        os.system('mv /root/pclp/upload/' + i + ' /root/pclp/backup/'
-                  + comp.soal + '/')
+            os.system('mkdir ' + paths.rootCompilerPath + 'backup/'
+                      + comp.soal)
+        os.system('mv ' + paths.rootCompilerPath + 'upload/' + i + ' '
+                  + paths.rootCompilerPath + 'backup/' + comp.soal + '/'
+                  )
         if comp.compiled != 1:
             continue
         os.system('rm ' + comp.outputPath + '*')
