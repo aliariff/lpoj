@@ -21,7 +21,7 @@ CuFon ends -->
     <div class="hbg_resize">
     </div>
   </div>
-  
+
   <div class="content">
     <div class="content_resize">
       <div class="mainbar">
@@ -68,7 +68,7 @@ CuFon ends -->
 									echo "<table><tr><td bgcolor='#77ff77'>".$success."</td></tr></table>";
 								}
 							?>
-							<form method='post' action='<?php echo site_url('/changepass') ?>'>
+							<form method='post' action='<?php echo site_url('password/editpass') ?>'>
 								<table>
 									<tr>
 										<td colspan='2'><h3>Password Management</h3></td>
@@ -93,7 +93,7 @@ CuFon ends -->
 							<hr />
 							If you're forgot your password please contact administrator
 						</p>
-					</div>    
+					</div>
 				</div>
 				<div id="content-bottom"></div>
 			</div>
@@ -101,7 +101,7 @@ CuFon ends -->
       </div>
       <div class="sidebar">
 		<!-- sidebar -->
-        <?php $this->load->view('sidebar_problem'); ?>		
+        <?php $this->load->view('sidebar_problem'); ?>
 		<?php $this->load->view('sidebar_contest'); ?>
 		<!-- end #sidebar -->
       </div>
@@ -115,7 +115,7 @@ CuFon ends -->
     </div>
   </div>
 	<!-- footer -->
-	<?php $this->load->view('footer'); ?>   
+	<?php $this->load->view('footer'); ?>
 	<!-- end #footer -->
 </div>
 </body>
