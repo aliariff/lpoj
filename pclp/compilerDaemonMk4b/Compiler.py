@@ -17,7 +17,6 @@ import time
 class Compiler:
 
     log = 'compiler.log'
-    dbName = 'lpoj'
 
     def __init__(self, path):
         self.canonicalPath = path
@@ -44,9 +43,9 @@ class Compiler:
 
         self.tmpPath = paths.tmpPath
         self.compiled = 0
-        self.db = MySQLdb.connect(host='localhost', user='root',
-                                  passwd='change_me',
-                                  db=Compiler.dbName)
+        self.db = MySQLdb.connect(host=database.host, user=database.user,
+                                  passwd=database.passwd,
+                                  db=database.dbName)
 
     def compile(self):
         if os.path.isfile(self.canonicalPath):

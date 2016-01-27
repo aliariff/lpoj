@@ -38,8 +38,6 @@ if len(sys.argv) > 1:
     else:
         print 'unknown argument(s)'
 
-# db=_mysql.connection(host="localhost",user="root",passwd="123",db="pclp")
-
 while 1 == 1:
     list1 = os.listdir(paths.rootCompilerPath + 'upload/')
     pat = re.compile('index.html')
