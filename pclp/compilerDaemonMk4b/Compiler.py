@@ -45,7 +45,7 @@ class Compiler:
         self.compiled = 0
         self.db = MySQLdb.connect(host=database.host, user=database.user,
                                   passwd=database.passwd,
-                                  db=database.dbName)
+                                  db=database.dbname)
 
     def compile(self):
         if os.path.isfile(self.canonicalPath):

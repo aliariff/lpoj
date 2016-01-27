@@ -7,7 +7,7 @@ import os
 import paths
 import database
 
-db = _mysql.connection(host=database.host, user=database.user, passwd=database.passwd, db=database.dbName)
+db = _mysql.connection(host=database.host, user=database.user, passwd=database.passwd, db=database.dbname)
 
 while True:
     try:
