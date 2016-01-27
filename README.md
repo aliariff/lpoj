@@ -1,3 +1,5 @@
+This is legacy code, i help to develop it when i was in 3rd semester during my bachelor degree (2012). Sorry if the code is kind of ugly :D
+
 This is online judge application for competitive programming. Developed use PHP (CodeIgniter), and compile thing handle by Python scripts. For now its supports C/C++ Language only. Hope it will support other language like Java, Python, Ruby, etc in near future.
 
 Step Install:
