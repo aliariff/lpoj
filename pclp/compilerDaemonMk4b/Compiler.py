@@ -109,9 +109,10 @@ class Compiler:
             self.ce()
             return
         else:
+            name_tmp = 'testCase' + self.soal + '_'
             counter = len([name for name in
                           os.listdir(paths.rootCompilerPath
-                          + 'inputcase/') if self.soal in name])
+                          + 'inputcase/') if name_tmp in name])
 
             if self.filetype == 'java':
                 os.chdir(self.outputPath)
