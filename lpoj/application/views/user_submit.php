@@ -27,7 +27,7 @@ editAreaLoader.init({
     <div class="hbg_resize">
     </div>
   </div>
-  
+
   <div class="content">
     <div class="content_resize">
       <div class="mainbar">
@@ -40,7 +40,7 @@ editAreaLoader.init({
 							<h2>Submit Solution</h2>
 						</div>
 						<p>
-							<?php 
+							<?php
 								if ($this->session->flashdata('uploaderror'))
 								{
 									echo "<table bgcolor='#ff7777' width='100%'><tr><td>";
@@ -48,7 +48,7 @@ editAreaLoader.init({
 									echo "</td></tr></table>";
 									echo "<br />";
 								}
-								
+
 								if ($this->session->flashdata('fileexist'))
 								{
 									echo "<table bgcolor='#ff7777' width='100%'><tr><td>";
@@ -56,7 +56,7 @@ editAreaLoader.init({
 									echo "</td></tr></table>";
 									echo "<br />";
 								}
-								
+
 								if ($this->session->flashdata('uploadok'))
 								{
 									echo "<table bgcolor='#77ff77' width='100%'><tr><td>";
@@ -90,7 +90,7 @@ editAreaLoader.init({
 							</form>
 						</p>
 						<?php echo $this->Rootmodel->getValue('submit_content'); ?>
-					</div>    
+					</div>
 				</div>
 				<div id="content-bottom"></div>
 			</div>
@@ -98,7 +98,7 @@ editAreaLoader.init({
       </div>
       <div class="sidebar">
 		<!-- sidebar -->
-        <?php $this->load->view('sidebar_problem'); ?>		
+        <?php $this->load->view('sidebar_problem'); ?>
 		<?php $this->load->view('sidebar_contest'); ?>
 		<!-- end #sidebar -->
       </div>
@@ -112,7 +112,7 @@ editAreaLoader.init({
     </div>
   </div>
 	<!-- footer -->
-	<?php $this->load->view('footer'); ?>   
+	<?php $this->load->view('footer'); ?>
 	<!-- end #footer -->
 </div>
 </body>

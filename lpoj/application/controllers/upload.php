@@ -53,7 +53,7 @@ class Upload extends CI_Controller
                 }
 
                 //echo "Error: " . $_FILES["file"]["error"] . "<br />";
-            } else if (!(in_array(end(explode(".", $_FILES["userfile"]["name"])), array("c", "cpp", "java", "pas")))) {
+            } else if (!(in_array(end(explode(".", $_FILES["userfile"]["name"])), array("c", "cpp", "java", "pas", "rb", "py")))) {
                 $this->session->set_flashdata('uploaderror', 'The filetype is not allowed');
             } else {
                 if (file_exists(COMPILER_FOLDER . "upload/" . $_FILES["userfile"]["name"])) {
