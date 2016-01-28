@@ -1446,7 +1446,7 @@ class Contestmodel extends CI_Model
         echo "<table border='1' width='100%'>";
         echo "<tr align='center' bgcolor='#F77A0C'><td>Rank</td><td>Username</td>";
         $this->Participantmodel->getParticipantProblem($contestid);
-        echo "<td NOWRAP>Total / Time</td>";
+        echo "<td NOWRAP>Time</td>";
         echo "</tr>";
 
         for ($i = 0; $i < $ctr; $i++) {
@@ -1579,7 +1579,7 @@ class Contestmodel extends CI_Model
         echo "<table border='1' width='100%'>";
         echo "<tr align='center' bgcolor='#F77A0C'><td>Rank</td><td>Username</td>";
         $this->Participantmodel->getParticipantProblem($contestid);
-        echo "<td NOWRAP>Total / Time</td>";
+        echo "<td NOWRAP>Time</td>";
         echo "</tr>";
 
         for ($i = 0; $i < $ctr; $i++) {
