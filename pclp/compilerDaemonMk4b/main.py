@@ -54,7 +54,7 @@ while 1 == 1:
             g = comp.test()
             os.system('mkdir -p ' + paths.rootCompilerPath + 'backup/'
                       + comp.soal)
-        os.system('mv ' + paths.rootCompilerPath + 'upload/' + i + ' '
+        os.system('mv -f ' + paths.rootCompilerPath + 'upload/' + i + ' '
                   + paths.rootCompilerPath + 'backup/' + comp.soal + '/'
                   )
         if comp.compiled != 1:
