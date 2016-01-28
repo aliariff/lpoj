@@ -1488,7 +1488,7 @@ class Contestmodel extends CI_Model
             $data[$row->participant_id] = array("user_name" => $row->user_name);
 
             foreach ($qr1->result() as $row1) {
-                $q2         = "select submit_id, submit_time, score from pc_submit where participant_id = '" . $row->participant_id . "' and problem_id = '" . $row1->problem_id . "'";
+                $q2         = "select submit_id, submit_time, score from pc_submit where participant_id = '" . $row->participant_id . "' and problem_id = '" . $row1->problem_id . "' and SUBMIT_TIME <= " . $this->getContestFreezeId($contestid);
                 $qr2        = $this->db->query($q2);
                 $max        = 0;
                 $submittime = 0;
