@@ -4,12 +4,12 @@
 		<title>PC.LP</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link href="<?php echo base_url(); ?>style.css" rel="stylesheet" type="text/css" />
-		<!-- CuFon: Enables smooth pretty custom font rendering. 100% SEO friendly. To disable, remove this section 
+		<!-- CuFon: Enables smooth pretty custom font rendering. 100% SEO friendly. To disable, remove this section
 		<script type="text/javascript" src="js/cufon-yui.js"></script>
 		<script type="text/javascript" src="js/droid_sans_400-droid_sans_700.font.js"></script>
 		<script type="text/javascript" src="js/cuf_run.js"></script>
 		CuFon ends -->
-		
+
 		<!-- TinyMCE -->
 		<script src="<?php echo base_url(); ?>tinymce/tinymce.min.js"></script>
 		<script>
@@ -32,13 +32,17 @@
 					<!-- content -->
 					<div class="article">
 							<h2>Add Problem To Contest</h2>
+							List Problem in Contest:
+							<?php $this->Problemmodel->getProblemContest($this->session->userdata('contestid')); ?>
+							<br>
+							<br>
 							<?php echo $this->Contestmodel->comboAllProblem(); ?>
 					</div>
 				<!-- end #content -->
 				</div>
 				<div class="sidebar">
 				<!-- sidebar -->
-				<?php $this->load->view('sidebar_problem'); ?>		
+				<?php $this->load->view('sidebar_problem'); ?>
 				<?php $this->load->view('sidebar_contest'); ?>
 				<!-- end #sidebar -->
 				</div>
@@ -51,7 +55,7 @@
 				</div>
 			</div>
 		<!-- footer -->
-		<?php $this->load->view('footer'); ?>   
+		<?php $this->load->view('footer'); ?>
 		<!-- end #footer -->
 	</div>
 </body>
