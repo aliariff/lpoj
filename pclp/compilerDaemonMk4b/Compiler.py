@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import signal
 import _mysql
 import paths
 import database
@@ -143,7 +144,9 @@ class Compiler:
                               )
                     if os.path.getsize('./pid') != 0:
                         pid = open('./pid')
-                        os.system('kill ' + pid.readline())
+                        proid = pid.readline()
+                        proid = int(proid)
+                        os.kill(proid, signal.SIGKILL)
                         pid.close()
                         self.tle(i)
                         continue
@@ -161,7 +164,9 @@ class Compiler:
                               )
                     if os.path.getsize('./pid') != 0:
                         pid = open('./pid')
-                        os.system('kill ' + pid.readline())
+                        proid = pid.readline()
+                        proid = int(proid)
+                        os.kill(proid, signal.SIGKILL)
                         pid.close()
                         self.tle(i)
                         continue
@@ -281,6 +286,7 @@ class Compiler:
                    + self.soal + ' testcase' + str(i)
                    + ' GAGAL, Memory Limit Exceeded\n')
         logs.close()
+        print 'mle'
 
     def tle(self, i):
         self.submit_log += '5 '
@@ -291,6 +297,7 @@ class Compiler:
                    + self.soal + ' testcase' + str(i)
                    + ' GAGAL, Time Limit Exceeded\n')
         logs.close()
+        print 'tle'
 
     def rte(self, i):
         self.submit_log += '6 '
@@ -301,6 +308,7 @@ class Compiler:
                    + self.soal + ' testcase' + str(i)
                    + ' GAGAL, Runtime Error\n')
         logs.close()
+        print 'rte'
 
     def ce(self):
         logs = open(Compiler.log, 'a')
@@ -311,3 +319,4 @@ class Compiler:
                    + '.' + self.filetype + ' ' + self.user + ' '
                    + self.soal + ' GAGAL, COMPILE ERROR\n')
         logs.close()
+        print 'ce'
