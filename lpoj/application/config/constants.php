@@ -1,6 +1,10 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-define('COMPILER_FOLDER', '/home/ali/lpoj/pclp/');
+$dir = getcwd();
+$dir = explode('/', $dir);
+$dir[count($dir) - 1] = 'pclp';
+$dir = join($dir, '/') . '/';
+define('COMPILER_FOLDER', $dir);
 
 /*
 |--------------------------------------------------------------------------
