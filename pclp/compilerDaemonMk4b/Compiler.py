@@ -147,7 +147,6 @@ class Compiler:
                     status.close()
                     return
             elif self.filetype == 'cpp' or self.filetype == 'c':
-
                 limit = limit * 1000
                 for i in range(1, counter + 1):
                     print 'i = ' + str(i)
