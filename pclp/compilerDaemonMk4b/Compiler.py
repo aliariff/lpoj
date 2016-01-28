@@ -118,11 +118,11 @@ class Compiler:
                 for i in range(1, counter + 1):
                     print 'i = ' + str(i)
                     returnStat = os.system('java -Duser.language=EN '
-                            + self.filename.title() + '<'
+                            + self.filename + '<'
                             + self.testPath + self.soal + '_' + str(i)
                             + '>' + self.tmpPath + '/tempOut &')
                     time.sleep(float(self.limit))
-                    os.system('ps aux | grep ' + self.filename.title()
+                    os.system('ps aux | grep ' + self.filename
                               + " | grep -v grep | awk '{print $2}' > "
                               + paths.rootCompilerPath
                               + 'compilerDaemonMk4b/pid')
