@@ -28,7 +28,8 @@ class Compiler:
         self.filetype = data[4].rsplit('.')[1]
         self.filename = data[4].rsplit('.')[0]
         self.root = os.curdir
-        self.log = paths.rootCompilerPath + 'compilerDaemonMk4b/compiler.log'
+        self.log = paths.rootCompilerPath \
+            + 'compilerDaemonMk4b/compiler.log'
 
         self.inputPath = paths.inputPath
 
@@ -124,10 +125,11 @@ class Compiler:
                     os.system('ps aux | grep ' + self.filename.title()
                               + " | grep -v grep | awk '{print $2}' > "
                               + paths.rootCompilerPath
-                              + "compilerDaemonMk4b/pid"
-                              )
-                    if os.path.getsize(paths.rootCompilerPath + 'compilerDaemonMk4b/pid') != 0:
-                        pid = open(paths.rootCompilerPath + 'compilerDaemonMk4b/pid')
+                              + 'compilerDaemonMk4b/pid')
+                    if os.path.getsize(paths.rootCompilerPath
+                            + 'compilerDaemonMk4b/pid') != 0:
+                        pid = open(paths.rootCompilerPath
+                                   + 'compilerDaemonMk4b/pid')
                         proid = pid.readline()
                         proid = int(proid)
                         os.kill(proid, signal.SIGKILL)
