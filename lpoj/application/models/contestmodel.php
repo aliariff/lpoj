@@ -1461,9 +1461,11 @@ class Contestmodel extends CI_Model
                     $color = '#ff7777';
                 }
 
-                echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $data[$rank[$i]][$x]['time'] . "/" . $data[$rank[$i]][$x]['score'] . "</td>";
+                // echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $data[$rank[$i]][$x]['time'] . "/" . $data[$rank[$i]][$x]['score'] . "</td>";
+                echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $data[$rank[$i]][$x]['time'] . "</td>";
             }
-            echo "<td>" . $data2[$rank[$i]]['totalscore'] . "/" . $data2[$rank[$i]]['totaltime'] . "</td>";
+            // echo "<td>" . $data2[$rank[$i]]['totalscore'] . "/" . $data2[$rank[$i]]['totaltime'] . "</td>";
+            echo "<td>" . $data2[$rank[$i]]['totaltime'] . "</td>";
             echo "</tr>";
         }
 
@@ -1592,9 +1594,11 @@ class Contestmodel extends CI_Model
                     $color = '#ff7777';
                 }
 
-                echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $data[$rank[$i]][$x]['time'] . "/" . $data[$rank[$i]][$x]['score'] . "</td>";
+                // echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $data[$rank[$i]][$x]['time'] . "/" . $data[$rank[$i]][$x]['score'] . "</td>";
+                echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $data[$rank[$i]][$x]['time'] . "</td>";
             }
-            echo "<td>" . $data2[$rank[$i]]['totalscore'] . "/" . $data2[$rank[$i]]['totaltime'] . "</td>";
+            // echo "<td>" . $data2[$rank[$i]]['totalscore'] . "/" . $data2[$rank[$i]]['totaltime'] . "</td>";
+            echo "<td>" . $data2[$rank[$i]]['totaltime'] . "</td>";
             echo "</tr>";
         }
 

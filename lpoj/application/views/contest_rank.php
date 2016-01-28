@@ -4,7 +4,7 @@
 		<title>PC.LP</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link href="<?php echo base_url(); ?>style.css" rel="stylesheet" type="text/css" />
-		<!-- CuFon: Enables smooth pretty custom font rendering. 100% SEO friendly. To disable, remove this section 
+		<!-- CuFon: Enables smooth pretty custom font rendering. 100% SEO friendly. To disable, remove this section
 		<script type="text/javascript" src="js/cufon-yui.js"></script>
 		<script type="text/javascript" src="js/droid_sans_400-droid_sans_700.font.js"></script>
 		<script type="text/javascript" src="js/cuf_run.js"></script>
@@ -41,7 +41,7 @@
 						</p>
 						<br /><hr /><br />
 						<?php echo $this->Rootmodel->getValue('solution_content'); ?>
-					</div>    
+					</div>
 				</div>
 				<div id="content-bottom"></div>
 			</div>
@@ -49,7 +49,7 @@
 				</div>
 				<div class="sidebar">
 				<!-- sidebar -->
-				<?php $this->load->view('sidebar_problem'); ?>		
+				<?php $this->load->view('sidebar_problem'); ?>
 				<?php $this->load->view('sidebar_contest'); ?>
 				<!-- end #sidebar -->
 				</div>
@@ -62,7 +62,7 @@
 				</div>
 			</div>
 		<!-- footer -->
-		<?php $this->load->view('footer'); ?>   
+		<?php $this->load->view('footer'); ?>
 		<!-- end #footer -->
 	</div>
 </body>
