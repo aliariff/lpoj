@@ -8,7 +8,8 @@ import paths
 import database
 import re
 
-db = _mysql.connection(host=database.host, user=database.user, passwd=database.passwd, db=database.dbname)
+db = _mysql.connection(host=database.host, user=database.user,
+                       passwd=database.passwd, db=database.dbname)
 
 while True:
     pat = re.compile('index.html')
