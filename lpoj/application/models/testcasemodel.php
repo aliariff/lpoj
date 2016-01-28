@@ -75,7 +75,7 @@ class Testcasemodel extends CI_Model
             </div>
             </div>
           </td>
-          <td>
+          <td style='display:none'>
             <div id=\"persentase\">
             <div id=\"persen1\" class=\"row\">
             <input type=\"text\" onchange=\"Calculate()\" name=\"pros1\" value=\"0\">
