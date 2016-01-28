@@ -2,10 +2,6 @@
 # -*- coding: utf-8 -*-
 import os
 
-# inputPath adalah tempat contoh output yang benar yang akan dibandingkan dengan hasil dari program peserta
-# usahakan direktori ini tidak berada di root website
-# hasil adalah nama depan dari file
-
 rootCompilerPath = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..')) + '/'
 inputPath = rootCompilerPath + 'outputcase/hasil'
 

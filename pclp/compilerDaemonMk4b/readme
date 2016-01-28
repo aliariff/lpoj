@@ -1,6 +1,0 @@
-paket ini berisi file-file yang dibutuhkan untuk menjalankan daemon compiler,
-harap ubah beberapa variabel dibawah ini:
-file mmain.py:
-line 5 list1=os.listdir("/var/www/gemastik/upload/") ke direktori upload file
-Compiler.py:
-line 
