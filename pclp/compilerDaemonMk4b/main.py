@@ -59,4 +59,4 @@ while 1 == 1:
                   )
         if comp.compiled != 1:
             continue
-        os.system('rm ' + comp.outputPath + '*')
+        os.system('rm -f ' + comp.outputPath + '*')
