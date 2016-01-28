@@ -137,15 +137,33 @@ class Compiler:
                             + str(i) + '>' + self.tmpPath + '/tempOut &'
                             )
                     time.sleep(float(limit))
-                    os.system('ps -C python -o pid= > pid')
+                    os.system('ps aux | grep ' + self.filename
+                              + " | grep -v grep | awk '{print $2}' > pid"
+                              )
                     if os.path.getsize('./pid') != 0:
                         pid = open('./pid')
                         os.system('kill ' + pid.readline())
                         pid.close()
                         self.tle(i)
                         continue
+                    self.compare(i)
             elif self.filetype == 'rb':
-                pass
+                for i in range(1, counter + 1):
+                    print 'i = ' + str(i)
+                    returnStat = os.system('ruby ' + self.filename + '<'
+                             + self.testPath + self.soal + '_' + str(i)
+                            + '>' + self.tmpPath + '/tempOut &')
+                    time.sleep(float(limit))
+                    os.system('ps aux | grep ' + self.filename
+                              + " | grep -v grep | awk '{print $2}' > pid"
+                              )
+                    if os.path.getsize('./pid') != 0:
+                        pid = open('./pid')
+                        os.system('kill ' + pid.readline())
+                        pid.close()
+                        self.tle(i)
+                        continue
+                    self.compare(i)
             elif self.filetype == 'cpp' or self.filetype == 'c':
                 self.limit = self.limit * 1000
                 for i in range(1, counter + 1):
