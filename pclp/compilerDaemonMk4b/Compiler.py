@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import os
 import _mysql
 import paths
@@ -8,6 +9,7 @@ import MySQLdb
 import sys
 from sandbox import *
 import time
+
 
 class Compiler:
 
@@ -38,7 +40,8 @@ class Compiler:
 
         self.tmpPath = paths.tmpPath
         self.compiled = 0
-        self.db = MySQLdb.connect(host=database.host, user=database.user,
+        self.db = MySQLdb.connect(host=database.host,
+                                  user=database.user,
                                   passwd=database.passwd,
                                   db=database.dbname)
 
@@ -66,8 +69,9 @@ class Compiler:
             elif self.filetype == 'rb' or self.filetype == 'py':
                 self.compiled = 1
             else:
-                status = open(paths.rootCompilerPath + 'status/' + self.waktu + '.'
-                              + self.hashcode + '.0.10', 'w')
+                status = open(paths.rootCompilerPath + 'status/'
+                              + self.waktu + '.' + self.hashcode
+                              + '.0.10', 'w')
                 status.close()
 
     def testRun(o):
@@ -80,8 +84,8 @@ class Compiler:
                    + '.' + self.filetype + ' ' + self.user + ' '
                    + self.soal + ' GAGAL, MALICIOUS CODE\n')
         logs.close()
-        status = open(paths.rootCompilerPath + 'status/' + self.waktu + '.'
-                      + self.hashcode + '.0.11.1', 'w')
+        status = open(paths.rootCompilerPath + 'status/' + self.waktu
+                      + '.' + self.hashcode + '.0.11.1', 'w')
         status.close()
         return
 
@@ -89,8 +93,9 @@ class Compiler:
         returnStat = 0
         if self.compiled != 1:
             logs = open(Compiler.log, 'a')
-            status = open(paths.rootCompilerPath + 'status/' + self.waktu + '.'
-                          + self.hashcode + '.0.2.2', 'w')
+            status = open(paths.rootCompilerPath + 'status/'
+                          + self.waktu + '.' + self.hashcode + '.0.2.2'
+                          , 'w')
             status.close()
             logs.write('kompilasi ' + self.hashcode + ' '
                        + self.filename + '.' + self.filetype + ' '
@@ -108,13 +113,14 @@ class Compiler:
             memoryL.close()
 
             counter = len([name for name in
-                          os.listdir(paths.rootCompilerPath + 'inputcase/')
-                          if self.soal in name])
+                          os.listdir(paths.rootCompilerPath
+                          + 'inputcase/') if self.soal in name])
             total = 0
             submit_log = ''
             status_log = '.7.'
 
             # langkah menjalankan program
+
             if self.filetype == 'java':
                 limiter = open(paths.limiterPath + self.soal, 'r')
                 memoryL = open(paths.memoryPath + self.soal, 'r')
@@ -135,12 +141,13 @@ class Compiler:
                     pid = open('./pid')
                     os.system('kill ' + pid.readline())
                     pid.close()
-                    status = open(paths.rootCompilerPath + 'status/' + self.waktu
-                                  + '.' + self.hashcode + '.0', 'w')
+                    status = open(paths.rootCompilerPath + 'status/'
+                                  + self.waktu + '.' + self.hashcode
+                                  + '.0', 'w')
                     status.close()
                     return
-
             elif self.filetype == 'cpp' or self.filetype == 'c':
+
                 limit = limit * 1000
                 for i in range(1, counter + 1):
                     print 'i = ' + str(i)
@@ -259,14 +266,14 @@ class Compiler:
                             logs.close()
                             print 'gagal'
 
-            status = open(paths.rootCompilerPath + 'status/' + self.waktu + '.'
-                          + self.hashcode + '.' + str(total)
-                          + status_log + submit_log, 'w')
+            status = open(paths.rootCompilerPath + 'status/'
+                          + self.waktu + '.' + self.hashcode + '.'
+                          + str(total) + status_log + submit_log, 'w')
             status.close()
             logs = open(Compiler.log, 'a')
             logs.write('HASIL ' + str(self.hashcode) + ' '
                        + self.filename + '.' + self.filetype + ' '
-                       + self.user + ' ' + self.soal + ' '
-                       + str(total) + '\n')
+                       + self.user + ' ' + self.soal + ' ' + str(total)
+                       + '\n')
             logs.close()
             print 'total = ' + str(total)
