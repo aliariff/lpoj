@@ -41,6 +41,7 @@ class Compiler:
         self.tmpPath = paths.tmpPath
         self.compiled = 0
         self.total = 0
+        self.ac_count = 0
         self.submit_log = ''
         self.status_log = '.1.'
 
@@ -189,6 +190,8 @@ class Compiler:
                         continue
                     self.compare(i)
 
+            if self.ac_count == counter:
+                self.status_log = '.7.'
             status = open(paths.rootCompilerPath + 'status/'
                           + self.waktu + '.' + self.hashcode + '.'
                           + str(self.total) + self.status_log
@@ -226,6 +229,7 @@ class Compiler:
         if returnStat == 0:
             print returnStat
             self.submit_log += '7 '
+            self.ac_count += 1
             logs = open(Compiler.log, 'a')
             logs.write('running ' + self.hashcode + ' ' + self.filename
                        + '.' + self.filetype + ' ' + self.user + ' '
