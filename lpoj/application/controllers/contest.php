@@ -287,9 +287,9 @@ class Contest extends CI_Controller
         } else {
             $cname    = $this->input->post('conname');
             $cdesc    = $this->input->post('condesc');
-            $cstart   = human_to_unix($this->input->post('constart')) + 3600;
-            $cfreeze  = human_to_unix($this->input->post('confreeze')) + 3600;
-            $cend     = human_to_unix($this->input->post('conend')) + 3600;
+            $cstart   = human_to_unix($this->input->post('constart'));
+            $cfreeze  = human_to_unix($this->input->post('confreeze'));
+            $cend     = human_to_unix($this->input->post('conend'));
             $cpenalty = $this->input->post('conpenalty');
 
             $this->Contestmodel->updateContestDetail($cname, $cdesc, $cstart, $cfreeze, $cend, $cpenalty);
