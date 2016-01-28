@@ -1,3 +1,4 @@
 *.pyc
+*.log
 pclp/*
 !pclp/compilerDaemonMk4b/
