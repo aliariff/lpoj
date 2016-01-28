@@ -15,7 +15,8 @@ def strip(path):
     file = open(path, 'r')
     for line in file:
         d = re.search('system', line)
-        if d:
+        backtick = re.search('`', line)
+        if d or backtick:
             return True
 
     return False
