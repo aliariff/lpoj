@@ -32,7 +32,7 @@ class Testcasemodel extends CI_Model
             echo "</div>
             </div>
           </td>
-          <td>
+          <td style='display:none'>
             <div id=\"persentase\">";
             $i = 1;
             foreach ($qr->result() as $row) {
@@ -56,7 +56,7 @@ class Testcasemodel extends CI_Model
             foreach ($qr->result() as $row) {
                 $total += $row->persentase;
             }
-            echo "Total = " . $total . " %";
+            // echo "Total = " . $total . " %";
             echo "</div></td>
           </tr>";
         } else {
