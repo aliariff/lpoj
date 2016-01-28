@@ -21,7 +21,7 @@ CuFon ends -->
     <div class="hbg_resize">
     </div>
   </div>
-  
+
   <div class="content">
     <div class="content_resize">
       <div class="mainbar">
@@ -38,17 +38,17 @@ CuFon ends -->
 								$defaultHeight = 50;
 								$height = $defaultHeight + ($this->Contestmodel->getParticipantNumber() * $defaultHeight);
 								if ($height > 500) $height = 500;
-								
-								$cid = $this->Participantmodel->getMyContestId();								
+
+								$cid = $this->Participantmodel->getMyContestId();
 							?>
 							<iframe frameborder='0' src="<?php echo site_url('/publicrank/contest/'.$cid); ?>" width='100%' height="<?php echo $height; ?>" border='0' ></iframe>
-							
+
 							Contest rank page also can be viewed anonymously at :<br /><a href="<?php echo site_url('publicrank/contest/'.$cid); ?>" target="_blank"><?php echo site_url('publicrank/contest/'.$cid); ?></a>
-							
+
 						</p>
 						<br /><hr /><br />
 						<?php echo $this->Rootmodel->getValue('rank_content'); ?>
-					</div>    
+					</div>
 				</div>
 				<div id="content-bottom"></div>
 			</div>
@@ -56,7 +56,7 @@ CuFon ends -->
       </div>
       <div class="sidebar">
 		<!-- sidebar -->
-        <?php $this->load->view('sidebar_problem'); ?>		
+        <?php $this->load->view('sidebar_problem'); ?>
 		<?php $this->load->view('sidebar_contest'); ?>
 		<!-- end #sidebar -->
       </div>
@@ -70,7 +70,7 @@ CuFon ends -->
     </div>
   </div>
 	<!-- footer -->
-	<?php $this->load->view('footer'); ?>   
+	<?php $this->load->view('footer'); ?>
 	<!-- end #footer -->
 </div>
 </body>
