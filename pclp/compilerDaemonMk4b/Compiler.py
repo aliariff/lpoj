@@ -14,8 +14,6 @@ import time
 
 class Compiler:
 
-    log = 'compiler.log'
-
     def __init__(self, path):
         self.canonicalPath = path
         print path
@@ -30,6 +28,7 @@ class Compiler:
         self.filetype = data[4].rsplit('.')[1]
         self.filename = data[4].rsplit('.')[0]
         self.root = os.curdir
+        self.log = paths.rootCompilerPath + 'compilerDaemonMk4b/compiler.log'
 
         self.inputPath = paths.inputPath
 
@@ -77,8 +76,7 @@ class Compiler:
                 self.compiled = 1 - returnStat
             elif self.filetype == 'java':
                 returnStat = os.system('javac -d ' + self.outputPath
-                        + ' ' + self.canonicalPath + ' > '
-                        + self.tmpPath + 'tmpLog')
+                        + ' ' + self.canonicalPath)
                 self.compiled = 1 - returnStat
             elif self.filetype == 'rb' or self.filetype == 'py':
                 self.compiled = 1
@@ -93,7 +91,7 @@ class Compiler:
         os.system(o)
 
     def malcode(self):
-        logs = open(Compiler.log, 'a')
+        logs = open(self.log, 'a')
         logs.write('kompilasi ' + self.hashcode + ' ' + self.filename
                    + '.' + self.filetype + ' ' + self.user + ' '
                    + self.soal + ' GAGAL, MALICIOUS CODE\n')
@@ -116,22 +114,27 @@ class Compiler:
 
             if self.filetype == 'java':
                 os.chdir(self.outputPath)
-
-                returnStat = os.system('java -Duser.language=EN '
-                        + self.filename + '<' + self.testPath
-                        + self.soal + '>' + self.tmpPath + '/tempOut &')
-
-                time.sleep(float(self.limit))
-                os.system('ps -C java -o pid= > pid')
-                if os.path.getsize('./pid') != 0:
-                    pid = open('./pid')
-                    os.system('kill ' + pid.readline())
-                    pid.close()
-                    status = open(paths.rootCompilerPath + 'status/'
-                                  + self.waktu + '.' + self.hashcode
-                                  + '.0', 'w')
-                    status.close()
-                    return
+                for i in range(1, counter + 1):
+                    print 'i = ' + str(i)
+                    returnStat = os.system('java -Duser.language=EN '
+                            + self.filename.title() + '<'
+                            + self.testPath + self.soal + '_' + str(i)
+                            + '>' + self.tmpPath + '/tempOut &')
+                    time.sleep(float(self.limit))
+                    os.system('ps aux | grep ' + self.filename.title()
+                              + " | grep -v grep | awk '{print $2}' > "
+                              + paths.rootCompilerPath
+                              + "compilerDaemonMk4b/pid"
+                              )
+                    if os.path.getsize(paths.rootCompilerPath + 'compilerDaemonMk4b/pid') != 0:
+                        pid = open(paths.rootCompilerPath + 'compilerDaemonMk4b/pid')
+                        proid = pid.readline()
+                        proid = int(proid)
+                        os.kill(proid, signal.SIGKILL)
+                        pid.close()
+                        self.tle(i)
+                        continue
+                    self.compare(i)
             elif self.filetype == 'py':
                 for i in range(1, counter + 1):
                     print 'i = ' + str(i)
@@ -204,7 +207,7 @@ class Compiler:
                           + str(self.total) + self.status_log
                           + self.submit_log, 'w')
             status.close()
-            logs = open(Compiler.log, 'a')
+            logs = open(self.log, 'a')
             logs.write('HASIL ' + str(self.hashcode) + ' '
                        + self.filename + '.' + self.filetype + ' '
                        + self.user + ' ' + self.soal + ' '
@@ -237,22 +240,13 @@ class Compiler:
             print returnStat
             self.submit_log += '7 '
             self.ac_count += 1
-            logs = open(Compiler.log, 'a')
+            logs = open(self.log, 'a')
             logs.write('running ' + self.hashcode + ' ' + self.filename
                        + '.' + self.filetype + ' ' + self.user + ' '
                        + self.soal + ' testcase' + str(i)
                        + ' SUKSES, AC\n')
             logs.close()
             print 'Sukses'
-            # cursor = self.db.cursor()
-            # sql = \
-            #     "select persentase from pc_testcase where inputcase = 'testCase" \
-            #     + str(self.soal) + '_' + str(i) + "'"
-            # cursor.execute(sql)
-            # results = cursor.fetchall()
-            # for row in results:
-            #     print row[0]
-            #     self.total = self.total + int(row[0])
         else:
             print returnStat
             returnStat = os.system('diff -iwB ' + self.tmpPath
@@ -261,7 +255,7 @@ class Compiler:
             if returnStat == 0:
                 self.submit_log += '8 '
                 self.status_log = '.6.'
-                logs = open(Compiler.log, 'a')
+                logs = open(self.log, 'a')
                 logs.write('running ' + self.hashcode + ' '
                            + self.filename + '.' + self.filetype + ' '
                            + self.user + ' ' + self.soal + ' testcase'
@@ -271,7 +265,7 @@ class Compiler:
             else:
                 self.submit_log += '9 '
                 self.status_log = '.1.'
-                logs = open(Compiler.log, 'a')
+                logs = open(self.log, 'a')
                 logs.write('running ' + self.hashcode + ' '
                            + self.filename + '.' + self.filetype + ' '
                            + self.user + ' ' + self.soal + ' testcase'
@@ -282,7 +276,7 @@ class Compiler:
     def mle(self, i):
         self.submit_log += '3 '
         self.status_log = '.5.'
-        logs = open(Compiler.log, 'a')
+        logs = open(self.log, 'a')
         logs.write('running ' + self.hashcode + ' ' + self.filename
                    + '.' + self.filetype + ' ' + self.user + ' '
                    + self.soal + ' testcase' + str(i)
@@ -293,7 +287,7 @@ class Compiler:
     def tle(self, i):
         self.submit_log += '5 '
         self.status_log = '.4.'
-        logs = open(Compiler.log, 'a')
+        logs = open(self.log, 'a')
         logs.write('running ' + self.hashcode + ' ' + self.filename
                    + '.' + self.filetype + ' ' + self.user + ' '
                    + self.soal + ' testcase' + str(i)
@@ -304,7 +298,7 @@ class Compiler:
     def rte(self, i):
         self.submit_log += '6 '
         self.status_log = '.3.'
-        logs = open(Compiler.log, 'a')
+        logs = open(self.log, 'a')
         logs.write('running ' + self.hashcode + ' ' + self.filename
                    + '.' + self.filetype + ' ' + self.user + ' '
                    + self.soal + ' testcase' + str(i)
@@ -313,7 +307,7 @@ class Compiler:
         print 'rte'
 
     def ce(self):
-        logs = open(Compiler.log, 'a')
+        logs = open(self.log, 'a')
         status = open(paths.rootCompilerPath + 'status/' + self.waktu
                       + '.' + self.hashcode + '.0.2.2', 'w')
         status.close()
