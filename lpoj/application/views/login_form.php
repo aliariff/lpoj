@@ -14,17 +14,17 @@
       <form method="post" action="<?php echo site_url('/session'); ?>">
         <p><input type="text" name="username" value="" placeholder="Username"></p>
         <p><input type="password" name="password" value="" placeholder="Password"></p>
-        
+
         <p class="submit"><input type="submit" name="commit" value="Login"></p>
       </form>
     </div>
   </section>
 
-  <section class="about">
+  <!-- <section class="about">
     <p class="about-author">
       &copy; 2014 <a href="http://lp.if.its.ac.id/" target="_blank">Laboratorium Pemrograman</a> -
       <a href="http://if.its.ac.id/" target="_blank">Teknik Informatika</a><br>
       <a href="http://www.its.ac.id/" target="_blank">Institut Teknologi Sepuluh Nopember</a>
-  </section>
+  </section> -->
 </body>
 </html>
