@@ -197,6 +197,7 @@ class Compiler:
 
             if self.ac_count == counter:
                 self.status_log = '.7.'
+                self.total = 100
             status = open(paths.rootCompilerPath + 'status/'
                           + self.waktu + '.' + self.hashcode + '.'
                           + str(self.total) + self.status_log
@@ -242,15 +243,15 @@ class Compiler:
                        + ' SUKSES, AC\n')
             logs.close()
             print 'Sukses'
-            cursor = self.db.cursor()
-            sql = \
-                "select persentase from pc_testcase where inputcase = 'testCase" \
-                + str(self.soal) + '_' + str(i) + "'"
-            cursor.execute(sql)
-            results = cursor.fetchall()
-            for row in results:
-                print row[0]
-                self.total = self.total + int(row[0])
+            # cursor = self.db.cursor()
+            # sql = \
+            #     "select persentase from pc_testcase where inputcase = 'testCase" \
+            #     + str(self.soal) + '_' + str(i) + "'"
+            # cursor.execute(sql)
+            # results = cursor.fetchall()
+            # for row in results:
+            #     print row[0]
+            #     self.total = self.total + int(row[0])
         else:
             print returnStat
             returnStat = os.system('diff -iwB ' + self.tmpPath
