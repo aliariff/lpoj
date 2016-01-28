@@ -20,8 +20,8 @@ CuFon ends -->
 <div class="main">
 
 	<!-- header -->
-	<?php if($this->Usermodel->checkSessionProbset() || $this->Adminmodel->checkSession()) $this->load->view('contest_header'); 
-		else $this->load->view('header'); 
+	<?php if($this->Usermodel->checkSessionProbset() || $this->Adminmodel->checkSession()) $this->load->view('contest_header');
+		else $this->load->view('header');
 	?>
 	<!-- end #header -->
 
@@ -29,7 +29,7 @@ CuFon ends -->
     <div class="hbg_resize">
     </div>
   </div>
-  
+
   <div class="content">
     <div class="content_resize">
       <div class="mainbar">
@@ -48,7 +48,7 @@ CuFon ends -->
 
 						<br /><hr />
 						<?php echo $this->Rootmodel->getValue('solution_content'); ?>
-					</div>    
+					</div>
 				</div>
 				<div id="content-bottom"></div>
 			</div>
@@ -59,7 +59,7 @@ CuFon ends -->
 	  </script>
       <div class="sidebar">
 		<!-- sidebar -->
-        <?php $this->load->view('sidebar_problem'); ?>		
+        <?php $this->load->view('sidebar_problem'); ?>
 		<?php $this->load->view('sidebar_contest'); ?>
 		<!-- end #sidebar -->
       </div>
@@ -73,7 +73,7 @@ CuFon ends -->
     </div>
   </div>
 	<!-- footer -->
-	<?php $this->load->view('footer'); ?>   
+	<?php $this->load->view('footer'); ?>
 	<!-- end #footer -->
 </div>
 </body>
