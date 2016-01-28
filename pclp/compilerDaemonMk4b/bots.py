@@ -26,6 +26,6 @@ while True:
                      + "', STATUS_ID = '" + data[3]
                      + "', SUBMIT_LOG = '" + data[4]
                      + "' WHERE SUBMIT_HASH ='" + data[1] + "'")
-            os.system('rm ' + paths.statusPath + '*')
+            os.system('rm -f ' + paths.statusPath + '*')
     except Exception:
         print 'exception'

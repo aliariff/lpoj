@@ -52,7 +52,7 @@ while 1 == 1:
         else:
             comp.compile()
             g = comp.test()
-            os.system('mkdir ' + paths.rootCompilerPath + 'backup/'
+            os.system('mkdir -p ' + paths.rootCompilerPath + 'backup/'
                       + comp.soal)
         os.system('mv ' + paths.rootCompilerPath + 'upload/' + i + ' '
                   + paths.rootCompilerPath + 'backup/' + comp.soal + '/'
