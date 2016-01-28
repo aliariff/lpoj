@@ -42,7 +42,7 @@ class Compiler:
         self.compiled = 0
         self.total = 0
         self.submit_log = ''
-        self.status_log = '.7.'
+        self.status_log = '.1.'
 
         limiter = open(paths.limiterPath + self.soal, 'r')
         limit = limiter.readline()
@@ -118,7 +118,7 @@ class Compiler:
                         + self.filename + '<' + self.testPath
                         + self.soal + '>' + self.tmpPath + '/tempOut &')
 
-                time.sleep(float(limit))
+                time.sleep(float(self.limit))
                 os.system('ps -C java -o pid= > pid')
                 if os.path.getsize('./pid') != 0:
                     pid = open('./pid')
@@ -132,12 +132,12 @@ class Compiler:
             elif self.filetype == 'py':
                 for i in range(1, counter + 1):
                     print 'i = ' + str(i)
-                    returnStat = os.system('python ' + self.filename
-                            + '<' + self.testPath + self.soal + '_'
-                            + str(i) + '>' + self.tmpPath + '/tempOut &'
-                            )
-                    time.sleep(float(limit))
-                    os.system('ps aux | grep ' + self.filename
+                    returnStat = os.system('python '
+                            + self.canonicalPath + '<' + self.testPath
+                            + self.soal + '_' + str(i) + '>'
+                            + self.tmpPath + '/tempOut &')
+                    time.sleep(float(self.limit))
+                    os.system('ps aux | grep ' + self.canonicalPath
                               + " | grep -v grep | awk '{print $2}' > pid"
                               )
                     if os.path.getsize('./pid') != 0:
@@ -150,11 +150,12 @@ class Compiler:
             elif self.filetype == 'rb':
                 for i in range(1, counter + 1):
                     print 'i = ' + str(i)
-                    returnStat = os.system('ruby ' + self.filename + '<'
-                             + self.testPath + self.soal + '_' + str(i)
-                            + '>' + self.tmpPath + '/tempOut &')
-                    time.sleep(float(limit))
-                    os.system('ps aux | grep ' + self.filename
+                    returnStat = os.system('ruby ' + self.canonicalPath
+                            + '<' + self.testPath + self.soal + '_'
+                            + str(i) + '>' + self.tmpPath + '/tempOut &'
+                            )
+                    time.sleep(float(self.limit))
+                    os.system('ps aux | grep ' + self.canonicalPath
                               + " | grep -v grep | awk '{print $2}' > pid"
                               )
                     if os.path.getsize('./pid') != 0:
