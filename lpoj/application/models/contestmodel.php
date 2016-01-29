@@ -1356,11 +1356,20 @@ class Contestmodel extends CI_Model
 
             foreach ($qr1->result() as $row1) {
                 $q2         = "select submit_id, submit_time, score from pc_submit where participant_id = '" . $row->participant_id . "' and problem_id = '" . $row1->problem_id . "'";
+                $first_ac         = "select submit_id from pc_submit where participant_id = '" . $row->participant_id . "' and problem_id = '" . $row1->problem_id . "' and status_id = 7 order by submit_id asc";
+                $first_ac_id = $this->db->query($first_ac);
+                if ($first_ac_id->num_rows() > 0) {
+                  $first_ac_id = $first_ac_id->first_row()->submit_id;
+                } else {
+                  $first_ac_id = 0;
+                }
                 $qr2        = $this->db->query($q2);
                 $max        = 0;
                 $submittime = 0;
                 $submitid   = 0;
+                $counter    = 0;
                 foreach ($qr2->result() as $row2) {
+                    if ($row2->submit_id <= $first_ac_id) $counter++;
                     if ($row2->score > $max) {
                         $max        = $row2->score;
                         $submitid   = $row2->submit_id;
@@ -1374,7 +1383,7 @@ class Contestmodel extends CI_Model
                     }
                 }
                 $newdata = array(
-                    "counter"  => $qr2->num_rows(),
+                    "counter"  => $counter,
                     "time"     => $submittime,
                     "score"    => $max,
                     "submitid" => $submitid,
@@ -1462,7 +1471,7 @@ class Contestmodel extends CI_Model
                 }
 
                 // echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $data[$rank[$i]][$x]['time'] . "/" . $data[$rank[$i]][$x]['score'] . "</td>";
-                echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $data[$rank[$i]][$x]['time'] . "</td>";
+                echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . unix_to_human($data[$rank[$i]][$x]['time']) . "</td>";
             }
             // echo "<td>" . $data2[$rank[$i]]['totalscore'] . "/" . $data2[$rank[$i]]['totaltime'] . "</td>";
             echo "<td>" . $data2[$rank[$i]]['totaltime'] . "</td>";
@@ -1489,11 +1498,20 @@ class Contestmodel extends CI_Model
 
             foreach ($qr1->result() as $row1) {
                 $q2         = "select submit_id, submit_time, score from pc_submit where participant_id = '" . $row->participant_id . "' and problem_id = '" . $row1->problem_id . "' and SUBMIT_TIME <= " . $this->getContestFreezeId($contestid);
+                $first_ac         = "select submit_id, submit_time, score from pc_submit where participant_id = '" . $row->participant_id . "' and problem_id = '" . $row1->problem_id . "' and SUBMIT_TIME <= " . $this->getContestFreezeId($contestid) . " and status_id = 7 order by submit_id asc";
+                $first_ac_id = $this->db->query($first_ac);
+                if ($first_ac_id->num_rows() > 0) {
+                  $first_ac_id = $first_ac_id->first_row()->submit_id;
+                } else {
+                  $first_ac_id = 0;
+                }
                 $qr2        = $this->db->query($q2);
                 $max        = 0;
                 $submittime = 0;
                 $submitid   = 0;
+                $counter    = 0;
                 foreach ($qr2->result() as $row2) {
+                    if ($row2->submit_id <= $first_ac_id) $counter++;
                     if ($row2->score > $max) {
                         $max        = $row2->score;
                         $submitid   = $row2->submit_id;
@@ -1507,7 +1525,7 @@ class Contestmodel extends CI_Model
                     }
                 }
                 $newdata = array(
-                    "counter"  => $qr2->num_rows(),
+                    "counter"  => $counter,
                     "time"     => $submittime,
                     "score"    => $max,
                     "submitid" => $submitid,
@@ -1595,7 +1613,7 @@ class Contestmodel extends CI_Model
                 }
 
                 // echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $data[$rank[$i]][$x]['time'] . "/" . $data[$rank[$i]][$x]['score'] . "</td>";
-                echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $data[$rank[$i]][$x]['time'] . "</td>";
+                echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . unix_to_human($data[$rank[$i]][$x]['time']) . "</td>";
             }
             // echo "<td>" . $data2[$rank[$i]]['totalscore'] . "/" . $data2[$rank[$i]]['totaltime'] . "</td>";
             echo "<td>" . $data2[$rank[$i]]['totaltime'] . "</td>";
