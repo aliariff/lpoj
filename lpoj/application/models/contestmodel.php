@@ -233,7 +233,9 @@ class Contestmodel extends CI_Model
 
     public function showRank($useFreeze = true, $contestid = null)
     {
-        $contestid = $contestid || $this->session->userdata('contestid');
+        if (!$contestid) {
+            $contestid = $this->session->userdata('contestid');
+        }
         if ($useFreeze) {
             $freeze_time = $this->getContestFreezeId($contestid);
         }
