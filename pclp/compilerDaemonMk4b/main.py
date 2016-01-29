@@ -9,18 +9,7 @@ import re
 import sys
 import fnmatch
 import paths
-
-
-def strip(path):
-    file = open(path, 'r')
-    for line in file:
-        d = re.search('system', line)
-        backtick = re.search('`', line)
-        if d or backtick:
-            return True
-
-    return False
-
+import blacklist
 
 if len(sys.argv) > 1:
     if sys.argv[1] == 'update':
@@ -48,7 +37,7 @@ while 1 == 1:
         if pat.search(i) != None:
             continue
         comp = Compiler(paths.rootCompilerPath + 'upload/' + i)
-        if strip(paths.rootCompilerPath + 'upload/' + i):
+        if blacklist.check(paths.rootCompilerPath + 'upload/' + i):
             comp.malcode()
         else:
             comp.compile()

@@ -8,18 +8,7 @@ import _mysql
 import re
 import sys
 import paths
-
-
-def strip(path):
-    file = open(path, 'r')
-    for line in file:
-        d = re.search('system', line)
-        backtick = re.search('`', line)
-        if d or backtick:
-            return True
-
-    return False
-
+import blacklist
 
 while 1 == 1:
     list1 = os.listdir(paths.rootCompilerPath + 'backup/')
@@ -35,7 +24,7 @@ while 1 == 1:
                     continue
                 comp = Compiler(paths.rootCompilerPath + 'backup/'
                                 + name[1] + '/' + i)
-                if strip(paths.rootCompilerPath + 'backup/' + name[1]
+                if blacklist.check(paths.rootCompilerPath + 'backup/' + name[1]
                          + '/' + i):
                     comp.malcode()
                 else:
