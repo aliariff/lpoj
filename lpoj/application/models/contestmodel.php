@@ -53,9 +53,12 @@ class Contestmodel extends CI_Model
 
     public function getContestFreezeId($id)
     {
-        $q  = "SELECT contest_freeze FROM pc_contest WHERE contest_id=" . $id;
+        $q  = "SELECT contest_freeze FROM pc_contest WHERE contest_id='" . $id . "'";
         $qr = $this->db->query($q);
-        return $qr->first_row()->contest_freeze;
+        if ($qr->num_rows() > 0) {
+            return $qr->first_row()->contest_freeze;
+        }
+        return 0;
     }
 
     public function getContestEnd()
@@ -236,13 +239,14 @@ class Contestmodel extends CI_Model
         if (!$contestid) {
             $contestid = $this->session->userdata('contestid');
         }
+        $contestid = str_replace("'", '', $contestid);
         if ($useFreeze) {
             $freeze_time = $this->getContestFreezeId($contestid);
         }
         $q  = "select participant_id, user_name from pc_participant where contest_id = '" . $contestid . "'";
         $qr = $this->db->query($q);
 
-        $q1  = "select problem_id from pc_detcon where contest_id = " . $contestid . " order by problem_id asc";
+        $q1  = "select problem_id from pc_detcon where contest_id = '" . $contestid . "' order by problem_id asc";
         $qr1 = $this->db->query($q1);
 
         $data  = array();
