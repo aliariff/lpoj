@@ -5,7 +5,7 @@
 </head>
 <body>
 <?php
-	$this->Contestmodel->showParsialRank();
+    $this->Contestmodel->showRank(false);
 ?>
 </body>
 </html>

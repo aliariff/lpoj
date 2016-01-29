@@ -231,166 +231,13 @@ class Contestmodel extends CI_Model
         return false;
     }
 
-    public function showParsialRank()
+    public function showRank($useFreeze = true, $contestid = null)
     {
-        $contestid = $this->session->userdata('contestid');
-        $rotator   = $this->Participantmodel->getProblemNumber($contestid);
-
+        $contestid = $contestid || $this->session->userdata('contestid');
+        if ($useFreeze) {
+            $freeze_time = $this->getContestFreezeId($contestid);
+        }
         $q  = "select participant_id, user_name from pc_participant where contest_id = '" . $contestid . "'";
-        $qr = $this->db->query($q);
-
-        $q1  = "select problem_id from pc_detcon where contest_id = '" . $contestid . "' order by problem_id asc";
-        $qr1 = $this->db->query($q1);
-
-        $data  = array();
-        $data2 = array();
-        foreach ($qr->result() as $row) {
-            $data[$row->participant_id] = array("user_name" => $row->user_name);
-
-            foreach ($qr1->result() as $row1) {
-                $q2          = "select submit_id, submit_time, score from pc_submit where participant_id = '" . $row->participant_id . "' and problem_id = '" . $row1->problem_id . "'";
-                $first_ac    = "select submit_id from pc_submit where participant_id = '" . $row->participant_id . "' and problem_id = '" . $row1->problem_id . "' and status_id = 7 order by submit_id asc";
-                $first_ac_id = $this->db->query($first_ac);
-                if ($first_ac_id->num_rows() > 0) {
-                    $first_ac_id = $first_ac_id->first_row()->submit_id;
-                } else {
-                    $first_ac_id = 0;
-                }
-                $qr2        = $this->db->query($q2);
-                $max        = 0;
-                $submittime = 0;
-                $submitid   = 0;
-                $counter    = 0;
-                foreach ($qr2->result() as $row2) {
-                    if ($row2->submit_id <= $first_ac_id) {
-                        $counter++;
-                    }
-
-                    if ($row2->score > $max) {
-                        $max        = $row2->score;
-                        $submitid   = $row2->submit_id;
-                        $submittime = $row2->submit_time;
-                    } else if ($row2->score == $max) {
-                        if ($submittime > $row2->submit_time || $submittime == 0) {
-
-                            $submitid   = $row2->submit_id;
-                            $submittime = $row2->submit_time;
-                        }
-                    }
-                }
-                if ($counter == 0) {
-                    $counter = $qr2->num_rows();
-                }
-
-                $newdata = array(
-                    "counter"  => $counter,
-                    "time"     => $submittime,
-                    "score"    => $max,
-                    "submitid" => $submitid,
-                );
-                array_push($data[$row->participant_id], $newdata);
-            }
-        }
-
-        $ctr  = 0;
-        $rank = array();
-        foreach ($qr->result() as $row) {
-            $totalscore = 0;
-            $totaltime  = 0;
-            for ($x = 0; $x < $qr1->num_rows(); $x++) {
-                $totalscore += $data[$row->participant_id][$x]['score'];
-                $totaltime += $data[$row->participant_id][$x]['time'];
-            }
-            $data2[$row->participant_id] = array("totalscore" => $totalscore, "totaltime" => $totaltime);
-            $rank[$ctr]                  = $row->participant_id;
-            $ctr++;
-        }
-
-        $array = $data2;
-
-        for ($i = 0; $i < $ctr; $i++) {
-            for ($j = 0; $j < $ctr; $j++) {
-                if ($array[$rank[$i]]['totalscore'] < $array[$rank[$j]]['totalscore']) {
-                    $temp     = $rank[$i];
-                    $rank[$i] = $rank[$j];
-                    $rank[$j] = $temp;
-                }
-                if ($array[$rank[$i]]['totalscore'] == $array[$rank[$j]]['totalscore']) {
-                    if ($array[$rank[$i]]['totaltime'] > $array[$rank[$j]]['totaltime']) {
-                        $temp     = $rank[$i];
-                        $rank[$i] = $rank[$j];
-                        $rank[$j] = $temp;
-                    }
-                }
-            }
-        }
-
-        for ($i = 0; $i < $ctr; $i++) {
-            for ($j = 0; $j < $ctr; $j++) {
-                if ($array[$rank[$j]]['totalscore'] == 0 && $array[$rank[$j]]['totaltime'] == 0 && $array[$rank[$i]]['totalscore'] == 0 && $array[$rank[$i]]['totaltime'] == 0) {
-                    if ($rank[$j] < $rank[$i]) {
-                        $temp     = $rank[$i];
-                        $rank[$i] = $rank[$j];
-                        $rank[$j] = $temp;
-                    }
-                }
-            }
-        }
-
-        $rank2 = $rank;
-        $z     = 0;
-        for ($i = $ctr - 1; $i >= 0; $i--) {
-            if ($array[$rank2[$i]]['totaltime'] != 0) {
-                $rank[$z] = $rank2[$i];
-                $z++;
-            }
-        }
-        for ($i = $ctr - 1; $i >= 0; $i--) {
-            if ($array[$rank2[$i]]['totalscore'] == 0 && $array[$rank2[$i]]['totaltime'] == 0) {
-                $rank[$z] = $rank2[$i];
-                $z++;
-            }
-        }
-
-        echo "<table border='1' width='100%'>";
-        echo "<tr align='center' bgcolor='#F77A0C'><td>Rank</td><td>Username</td>";
-        $this->Participantmodel->getParticipantProblem($contestid);
-        echo "<td NOWRAP>Time</td>";
-        echo "</tr>";
-
-        for ($i = 0; $i < $ctr; $i++) {
-            $temp = $i + 1;
-            echo "<tr><td>" . $temp . "</td><td>" . $data[$rank[$i]]['user_name'] . "</td>";
-
-            for ($x = 0; $x < $qr1->num_rows(); $x++) {
-                $color = '';
-                if ($data[$rank[$i]][$x]['time'] == 0) {
-                    $wkt = 0;
-                } else {
-                    $wkt = unix_to_human($data[$rank[$i]][$x]['time']);
-                }
-                if ($data[$rank[$i]][$x]['counter'] > 0 && $data[$rank[$i]][$x]['score'] == 100) {
-                    $color = '#77ff77';
-                } else if ($data[$rank[$i]][$x]['counter'] > 0) {
-                    $color = '#ff7777';
-                }
-
-                // echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $data[$rank[$i]][$x]['time'] . "/" . $data[$rank[$i]][$x]['score'] . "</td>";
-                echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $wkt . "</td>";
-            }
-            // echo "<td>" . $data2[$rank[$i]]['totalscore'] . "/" . $data2[$rank[$i]]['totaltime'] . "</td>";
-            echo "<td>" . $data2[$rank[$i]]['totaltime'] . "</td>";
-            echo "</tr>";
-        }
-
-        echo "</table>";
-    }
-
-    public function showParsialRankPublic($contestid)
-    {
-        $rotator = $this->Participantmodel->getProblemNumber($contestid);
-
-        $q  = "select participant_id, user_name from pc_participant where contest_id = " . $contestid . "";
         $qr = $this->db->query($q);
 
         $q1  = "select problem_id from pc_detcon where contest_id = " . $contestid . " order by problem_id asc";
@@ -402,8 +249,13 @@ class Contestmodel extends CI_Model
             $data[$row->participant_id] = array("user_name" => $row->user_name);
 
             foreach ($qr1->result() as $row1) {
-                $q2          = "select submit_id, submit_time, score from pc_submit where participant_id = '" . $row->participant_id . "' and problem_id = '" . $row1->problem_id . "' and SUBMIT_TIME <= " . $this->getContestFreezeId($contestid);
-                $first_ac    = "select submit_id, submit_time, score from pc_submit where participant_id = '" . $row->participant_id . "' and problem_id = '" . $row1->problem_id . "' and SUBMIT_TIME <= " . $this->getContestFreezeId($contestid) . " and status_id = 7 order by submit_id asc";
+                $q2       = "select submit_id, submit_time, score from pc_submit where participant_id = '" . $row->participant_id . "' and problem_id = '" . $row1->problem_id . "'";
+                $first_ac = "select submit_id, submit_time, score from pc_submit where participant_id = '" . $row->participant_id . "' and problem_id = '" . $row1->problem_id . "' and status_id = 7";
+                if ($useFreeze) {
+                    $q2 .= " and submit_time <= " . $freeze_time;
+                    $first_ac .= " and submit_time <= " . $freeze_time;
+                }
+                $first_ac .= " order by submit_id asc";
                 $first_ac_id = $this->db->query($first_ac);
                 if ($first_ac_id->num_rows() > 0) {
                     $first_ac_id = $first_ac_id->first_row()->submit_id;
@@ -419,7 +271,6 @@ class Contestmodel extends CI_Model
                     if ($row2->submit_id <= $first_ac_id) {
                         $counter++;
                     }
-
                     if ($row2->score > $max) {
                         $max        = $row2->score;
                         $submitid   = $row2->submit_id;

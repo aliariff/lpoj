@@ -2,12 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs">
 	<head>
 		<title>PC.LP Contest Scoreboard</title>
-	
-	
 	</head>
 	<body>
 		<?php
-			$this->Contestmodel->showParsialRankPublic($id);
+			$this->Contestmodel->showRank(true, $id);
 		?>
 	</body>
 </html>
