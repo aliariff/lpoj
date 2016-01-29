@@ -1382,6 +1382,7 @@ class Contestmodel extends CI_Model
                         }
                     }
                 }
+                if ($counter == 0) $counter = $qr2->num_rows();
                 $newdata = array(
                     "counter"  => $counter,
                     "time"     => $submittime,
@@ -1524,6 +1525,7 @@ class Contestmodel extends CI_Model
                         }
                     }
                 }
+                if ($counter == 0) $counter = $qr2->num_rows();
                 $newdata = array(
                     "counter"  => $counter,
                     "time"     => $submittime,
