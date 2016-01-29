@@ -1465,6 +1465,11 @@ class Contestmodel extends CI_Model
 
             for ($x = 0; $x < $qr1->num_rows(); $x++) {
                 $color = '';
+                if ($data[$rank[$i]][$x]['time'] == 0) {
+                  $wkt = 0;
+                } else {
+                  $wkt = unix_to_human($data[$rank[$i]][$x]['time']);
+                }
                 if ($data[$rank[$i]][$x]['counter'] > 0 && $data[$rank[$i]][$x]['score'] == 100) {
                     $color = '#77ff77';
                 } else if ($data[$rank[$i]][$x]['counter'] > 0) {
@@ -1472,7 +1477,7 @@ class Contestmodel extends CI_Model
                 }
 
                 // echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $data[$rank[$i]][$x]['time'] . "/" . $data[$rank[$i]][$x]['score'] . "</td>";
-                echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . unix_to_human($data[$rank[$i]][$x]['time']) . "</td>";
+                echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $wkt . "</td>";
             }
             // echo "<td>" . $data2[$rank[$i]]['totalscore'] . "/" . $data2[$rank[$i]]['totaltime'] . "</td>";
             echo "<td>" . $data2[$rank[$i]]['totaltime'] . "</td>";
@@ -1608,6 +1613,11 @@ class Contestmodel extends CI_Model
 
             for ($x = 0; $x < $qr1->num_rows(); $x++) {
                 $color = '';
+                if ($data[$rank[$i]][$x]['time'] == 0) {
+                  $wkt = 0;
+                } else {
+                  $wkt = unix_to_human($data[$rank[$i]][$x]['time']);
+                }
                 if ($data[$rank[$i]][$x]['counter'] > 0 && $data[$rank[$i]][$x]['score'] == 100) {
                     $color = '#77ff77';
                 } else if ($data[$rank[$i]][$x]['counter'] > 0) {
@@ -1615,7 +1625,7 @@ class Contestmodel extends CI_Model
                 }
 
                 // echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $data[$rank[$i]][$x]['time'] . "/" . $data[$rank[$i]][$x]['score'] . "</td>";
-                echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . unix_to_human($data[$rank[$i]][$x]['time']) . "</td>";
+                echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $wkt . "</td>";
             }
             // echo "<td>" . $data2[$rank[$i]]['totalscore'] . "/" . $data2[$rank[$i]]['totaltime'] . "</td>";
             echo "<td>" . $data2[$rank[$i]]['totaltime'] . "</td>";
