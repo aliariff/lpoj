@@ -100,6 +100,7 @@ class Compiler:
         status = open(paths.rootCompilerPath + 'status/' + self.waktu
                       + '.' + self.hashcode + '.0.11.1', 'w')
         status.close()
+        print 'malcode'
         return
 
     def test(self):
