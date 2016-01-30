@@ -323,7 +323,9 @@ class Contestmodel extends CI_Model
             for ($x = 0; $x < $qr1->num_rows(); $x++) {
                 $totalscore += $data[$row->participant_id][$x]['score'];
                 $totaltime += $data[$row->participant_id][$x]['time'];
-                $totaldiff += $data[$row->participant_id][$x]['time'] - $contest_start;
+                if ($data[$row->participant_id][$x]['time'] >= $contest_start) {
+                    $totaldiff += $data[$row->participant_id][$x]['time'] - $contest_start;
+                }
             }
             $data2[$row->participant_id] = array("totalscore" => $totalscore, "totaltime" => $totaltime, "totaldiff" => $totaldiff);
             $rank[$ctr]                  = $row->participant_id;
