@@ -43,6 +43,16 @@ class Contestmodel extends CI_Model
         return unix_to_human($qr->first_row()->contest_start);
     }
 
+    public function getContestStartId($id)
+    {
+        $q  = "SELECT contest_start FROM pc_contest WHERE contest_id='" . $id . "'";
+        $qr = $this->db->query($q);
+        if ($qr->num_rows() > 0) {
+            return $qr->first_row()->contest_start;
+        }
+        return 0;
+    }
+
     public function getContestFreeze()
     {
         $id = $this->session->userdata('contestid');
@@ -303,16 +313,19 @@ class Contestmodel extends CI_Model
             }
         }
 
-        $ctr  = 0;
-        $rank = array();
+        $ctr           = 0;
+        $rank          = array();
+        $contest_start = $this->getContestStartId($contestid);
         foreach ($qr->result() as $row) {
             $totalscore = 0;
             $totaltime  = 0;
+            $totaldiff  = 0;
             for ($x = 0; $x < $qr1->num_rows(); $x++) {
                 $totalscore += $data[$row->participant_id][$x]['score'];
                 $totaltime += $data[$row->participant_id][$x]['time'];
+                $totaldiff += $data[$row->participant_id][$x]['time'] - $contest_start;
             }
-            $data2[$row->participant_id] = array("totalscore" => $totalscore, "totaltime" => $totaltime);
+            $data2[$row->participant_id] = array("totalscore" => $totalscore, "totaltime" => $totaltime, "totaldiff" => $totaldiff);
             $rank[$ctr]                  = $row->participant_id;
             $ctr++;
         }
@@ -392,8 +405,11 @@ class Contestmodel extends CI_Model
                 // echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $data[$rank[$i]][$x]['time'] . "/" . $data[$rank[$i]][$x]['score'] . "</td>";
                 echo "<td bgcolor='" . $color . "'>" . $data[$rank[$i]][$x]['counter'] . "/" . $wkt . "</td>";
             }
+            $epoch = $data2[$rank[$i]]['totaldiff'];
+            $dt    = new DateTime("@$epoch");
+            $wkt   = $dt->format('H:i:s');
             // echo "<td>" . $data2[$rank[$i]]['totalscore'] . "/" . $data2[$rank[$i]]['totaltime'] . "</td>";
-            echo "<td>" . $data2[$rank[$i]]['totaltime'] . "</td>";
+            echo "<td>" . $wkt . "</td>";
             echo "</tr>";
         }
 
