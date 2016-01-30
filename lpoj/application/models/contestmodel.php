@@ -378,7 +378,10 @@ class Contestmodel extends CI_Model
                 if ($data[$rank[$i]][$x]['time'] == 0) {
                     $wkt = 0;
                 } else {
-                    $wkt = unix_to_human($data[$rank[$i]][$x]['time']);
+                    $epoch = $data[$rank[$i]][$x]['time'];
+                    $dt    = new DateTime("@$epoch");
+                    $dt->setTimezone(new DateTimeZone('Asia/Jakarta'));
+                    $wkt = $dt->format('Y-m-d H:i:s');
                 }
                 if ($data[$rank[$i]][$x]['counter'] > 0 && $data[$rank[$i]][$x]['score'] == 100) {
                     $color = '#77ff77';
