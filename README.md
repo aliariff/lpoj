@@ -36,7 +36,9 @@ Install Step:
 
    `install gcc, g++, ruby, python, java, just googling it :D`
    
-7. Change Database Config
+7. Import Database Default Schema & Change Database Config
+
+   Import file `schema.sql` to MySQL database.
    
    Change this config file `pclp/compilerDaemonMk4b/database.py`
 
@@ -45,5 +47,13 @@ Install Step:
 8. Run Compiler Daemon
 
    `bash pclp/starter.sh`
+   
+9. Try It!
 
+   Open `localhost` in your browser.
+   
+   Default login for admin: username is `admin`, password `admin`.
+   
+   Default login for ordinary user: username is `user`, password `user`.
+   
 Finish, happy exploring.
