@@ -10,32 +10,21 @@
 <script type="text/javascript" src="js/cuf_run.js"></script>
 CuFon ends -->
 <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery-1.11.1.min.js"></script>
-<!--script type="text/javascript" src="<?php echo base_url(); ?>js/ajax_user_solution.js"></script-->
-<!--Karena tidak bisa mengambil variable php ke external javascript diatas, maka sementara diletakan secara internal-->
 <script>
-	$(document).ready(function(){
-		//while($(".ajax_solution").length){
-			
-			setInterval(function(){
-				$(".ajax_solution").each(function(){
-					var solution_temp=$(this);
-					var score_temp=solution_temp.html().split(" ");
-										
-					
-					$.get("<?php echo site_url(); ?>/solution/refreshverdict/"+score_temp[1],function(data){
-
-						if(data!="Pending"){
-
-
-							$("#"+score_temp[0]).html(data);
-							 solution_temp.remove();
-						}
-					});			
-				});			
-			},2000);
-		//}
-		
-	});
+  $(document).ready(function() {
+    setInterval(function() {
+          $(".ajax_solution").each(function() {
+              var solution_temp = $(this);
+              var score_temp = solution_temp.html().split(" ");
+              $.get("<?php echo site_url(); ?>/solution/refreshverdict/" + score_temp[1], function(data) {
+                  if (data != "Pending") {
+                      $("#" + score_temp[0]).html(data);
+                      solution_temp.remove();
+                  }
+              });
+          });
+      }, 2000);
+  });
 </script>
 </head>
 <body>
@@ -49,7 +38,7 @@ CuFon ends -->
     <div class="hbg_resize">
     </div>
   </div>
-  
+
   <div class="content">
     <div class="content_resize">
       <div class="mainbar">
@@ -66,7 +55,7 @@ CuFon ends -->
 						</p>
 						<br /><hr />
 						<?php echo $this->Rootmodel->getValue('solution_content'); ?>
-					</div>    
+					</div>
 				</div>
 				<div id="content-bottom"></div>
 			</div>
@@ -74,7 +63,7 @@ CuFon ends -->
       </div>
       <div class="sidebar">
 		<!-- sidebar -->
-        <?php $this->load->view('sidebar_problem'); ?>		
+        <?php $this->load->view('sidebar_problem'); ?>
 		<?php $this->load->view('sidebar_contest'); ?>
 		<!-- end #sidebar -->
       </div>
@@ -88,7 +77,7 @@ CuFon ends -->
     </div>
   </div>
 	<!-- footer -->
-	<?php $this->load->view('footer'); ?>   
+	<?php $this->load->view('footer'); ?>
 	<!-- end #footer -->
 </div>
 </body>
