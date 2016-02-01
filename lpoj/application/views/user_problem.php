@@ -21,7 +21,7 @@ CuFon ends -->
     <div class="hbg_resize">
     </div>
   </div>
-  
+
   <div class="content">
     <div class="content_resize">
       <div class="mainbar">
@@ -38,7 +38,7 @@ CuFon ends -->
 								echo $this->Problemmodel->getProblemContent($problemid);
 							?>
 						</p>
-					</div>    
+					</div>
 				</div>
 				<div id="content-bottom"></div>
 			</div>
@@ -46,7 +46,7 @@ CuFon ends -->
       </div>
       <div class="sidebar">
 		<!-- sidebar -->
-        <?php $this->load->view('sidebar_problem'); ?>		
+        <?php $this->load->view('sidebar_problem'); ?>
 		<?php $this->load->view('sidebar_contest'); ?>
 		<!-- end #sidebar -->
       </div>
@@ -60,7 +60,7 @@ CuFon ends -->
     </div>
   </div>
 	<!-- footer -->
-	<?php $this->load->view('footer'); ?>   
+	<?php $this->load->view('footer'); ?>
 	<!-- end #footer -->
 </div>
 </body>

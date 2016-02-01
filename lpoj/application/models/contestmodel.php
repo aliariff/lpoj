@@ -199,7 +199,7 @@ class Contestmodel extends CI_Model
             echo "<form method='post' action='" . site_url() . "/contest/addProblem'>";
             echo "<select name='problem'>";
             foreach ($qr->result() as $row) {
-                echo "<option value='" . $row->problem_id . "'>" . $row->problem_id . " - " . character_limiter($row->problem_title, 25) . "</option>";
+                echo "<option value='" . $row->problem_id . "'>" . character_limiter($row->problem_title, 25) . "</option>";
             }
             echo "</select><br />";
             echo "<input type='submit' value='Add This Problem To Contest' name='problemselect' />";

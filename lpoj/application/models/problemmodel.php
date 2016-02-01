@@ -36,7 +36,7 @@ class Problemmodel extends CI_Model
         $qr = $this->db->query($q);
         if ($qr->num_rows() > 0) {
             $row = $qr->first_row();
-            return "#" . $row->problem_id . " - " . $row->problem_title;
+            return $row->problem_title;
         } else {
             return "Error cannot load Problem....";
         }
@@ -119,7 +119,7 @@ class Problemmodel extends CI_Model
         $qr = $this->db->query($q);
         echo "<select name='submitproblem' size='1'>";
         foreach ($qr->result() as $row) {
-            echo "<option value='" . $row->problem_id . "'>" . $row->problem_id . " - " . $row->problem_title . "</option>";
+            echo "<option value='" . $row->problem_id . "'>" . $row->problem_title . "</option>";
         }
         echo "</select>";
     }
