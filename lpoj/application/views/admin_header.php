@@ -1,4 +1,4 @@
-<link rel="icon" href="<?=base_url()?>/images/favicon.gif" type="image/gif">
+<link rel="icon" href="<?=base_url()?>/images/favicon.ico">
 
 <div class="header">
     <div class="header_resize">

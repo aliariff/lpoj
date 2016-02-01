@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>BL.PC Login</title>
   <link rel="stylesheet" href="<?php echo base_url(); ?>/css/login-style.css" >
-  <link rel="icon" href="<?=base_url()?>/images/favicon.gif" type="image/gif">
+  <link rel="icon" href="<?=base_url()?>/images/favicon.ico">
 </head>
 <body>
   <section class="container">
