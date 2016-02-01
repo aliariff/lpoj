@@ -52,8 +52,8 @@ class Problemmodel extends CI_Model
             "<br /><br />" . $row->problem_content .
             "<br /><hr />" .
             "<h4>Problem Requirement</h4>" .
-            "Runtime Limit : " . $row->problem_runtime . " seconds <br />" .
-            "Memory Limit : " . $row->problem_memory . " bytes";
+            "Runtime Limit : " . $row->problem_runtime . " seconds <br />";
+            // "Memory Limit : " . $row->problem_memory . " bytes";
         } else {
             return "Error cannot load Problem....";
         }
