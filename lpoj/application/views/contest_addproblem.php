@@ -13,7 +13,7 @@
 		<!-- TinyMCE -->
 		<script src="<?php echo base_url(); ?>tinymce/tinymce.min.js"></script>
 		<script>
-        tinymce.init({selector:'textarea'});
+        tinymce.init({selector:'textarea', plugins: "image"});
 		</script>
 		<!-- /TinyMCE -->
 	</head>
