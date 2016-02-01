@@ -26,7 +26,7 @@ class Participantmodel extends CI_Model
         ";
         $qr = $this->db->query($q);
         foreach ($qr->result() as $row) {
-            echo "<td NOWRAP>Problem asd#" . $row->problem_id . "</td>";
+            echo "<td NOWRAP>Problem #" . $row->problem_id . "</td>";
         }
     }
 
