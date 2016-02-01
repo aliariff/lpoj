@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Upload TestCase PC.LP</title>
+	<title>Upload TestCase BL.PC</title>
 
 	<!-- Linked files. -->
 	<script src="<?php echo base_url(); ?>js/jquery-1.10.2.min.js"></script>

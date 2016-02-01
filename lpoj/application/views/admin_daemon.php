@@ -1,10 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>PC.LP</title>
+<title>BL.PC</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link href="<?php echo base_url(); ?>style.css" rel="stylesheet" type="text/css" />
-<!-- CuFon: Enables smooth pretty custom font rendering. 100% SEO friendly. To disable, remove this section 
+<!-- CuFon: Enables smooth pretty custom font rendering. 100% SEO friendly. To disable, remove this section
 <script type="text/javascript" src="js/cufon-yui.js"></script>
 <script type="text/javascript" src="js/droid_sans_400-droid_sans_700.font.js"></script>
 <script type="text/javascript" src="js/cuf_run.js"></script>
@@ -17,17 +17,17 @@ CuFon ends -->
       $(':checkbox').iphoneStyle({
 			onChange: function(elem, value) {
         if($(elem)[0].checked==true){
-        		$url = window.location.origin + "/lpoj/index.php/admin/checkDaemon"; 
+        		$url = window.location.origin + "/lpoj/index.php/admin/checkDaemon";
         		$.post($url,
-					{ id: elem.attr('id'), stat : "on" }        		
+					{ id: elem.attr('id'), stat : "on" }
         		);
         	}
         else {
 				$.post($url,
-					{ id: elem.attr('id'), stat : "off" }        		
+					{ id: elem.attr('id'), stat : "off" }
         		);
 			}
-    	}      
+    	}
       });
     });
 </script>
@@ -43,7 +43,7 @@ CuFon ends -->
     <div class="hbg_resize">
     </div>
   </div>
-  
+
   <div class="content">
     <div class="content_resize">
       <div class="mainbar">
@@ -59,11 +59,11 @@ CuFon ends -->
 						exec("ps aux | grep 'main.py' | grep -v grep",$var,$retval3);
 						if($retval1==1 || $retval2==1 || $retval3==1)
 						{
-							echo "<input type=\"checkbox\" name=\"daemon\" id=\"daemon\" >";							
+							echo "<input type=\"checkbox\" name=\"daemon\" id=\"daemon\" >";
 						}
-						else 
+						else
 						{
-							echo "<input type=\"checkbox\" name=\"daemon\" id=\"daemon\" checked>";						
+							echo "<input type=\"checkbox\" name=\"daemon\" id=\"daemon\" checked>";
 						}
 					?>
 					</td>
@@ -74,7 +74,7 @@ CuFon ends -->
       </div>
       <div class="sidebar">
 		<!-- sidebar -->
-        <?php $this->load->view('sidebar_problem'); ?>		
+        <?php $this->load->view('sidebar_problem'); ?>
 		<?php $this->load->view('sidebar_contest'); ?>
 		<!-- end #sidebar -->
       </div>
@@ -88,7 +88,7 @@ CuFon ends -->
     </div>
   </div>
 	<!-- footer -->
-	<?php $this->load->view('footer'); ?>   
+	<?php $this->load->view('footer'); ?>
 	<!-- end #footer -->
 </div>
 </body>

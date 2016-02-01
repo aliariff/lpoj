@@ -1,7 +1,7 @@
 <link rel="icon" href="<?=base_url()?>images/favicon.gif" type="image/gif">
 <div class="header">
     <div class="header_resize">
-      <div class="logo"><h1><a href="">&nbsp;&nbsp;PC.LP</a></h1></div>
+      <div class="logo"><h1><a href="">&nbsp;&nbsp;BL.PC</a></h1></div>
       <div class="menu_nav">
         <div class="searchform">
         <div id="formsearch">

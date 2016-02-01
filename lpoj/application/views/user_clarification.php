@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>PC.LP</title>
+<title>BL.PC</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link href="<?php echo base_url(); ?>style.css" rel="stylesheet" type="text/css" />
 <!-- CuFon: Enables smooth pretty custom font rendering. 100% SEO friendly. To disable, remove this section
@@ -21,7 +21,7 @@ CuFon ends -->
     <div class="hbg_resize">
     </div>
   </div>
-  
+
   <div class="content">
     <div class="content_resize">
       <div class="mainbar">
@@ -34,7 +34,7 @@ CuFon ends -->
 							<h2>Clarification</h2>
 						</div>
 						<p>
-							<?php 							
+							<?php
 								if ($this->session->flashdata('clarificationok'))
 								{
 									echo "<table bgcolor='#F77A0C' width='100%'><tr><td>";
@@ -45,7 +45,7 @@ CuFon ends -->
 							?>
 							<form method='post' action="<?php echo site_url('/clarificationsend'); ?>" >
 								<table border='1' width='100%' bgcolor='#F77A0C'><tr><td>
-								<table>								
+								<table>
 									<tr>
 										<td style="color:#000">Clarification Title</td>
 										<td><input type="text" name="ctitle" size="50" /></td>
@@ -64,7 +64,7 @@ CuFon ends -->
 						Show Clarification : <a href="<?php echo site_url('clarification'); ?>">Only Me</a> - <a href="<?php echo site_url('clarification/all'); ?>">Show All</a>
 						<br /><br />
 						<?php echo $this->Clarificationmodel->getAllClarification(); ?>
-					</div>    
+					</div>
 				</div>
 				<div id="content-bottom"></div>
 			</div>
@@ -72,7 +72,7 @@ CuFon ends -->
       </div>
       <div class="sidebar">
 		<!-- sidebar -->
-        <?php $this->load->view('sidebar_problem'); ?>		
+        <?php $this->load->view('sidebar_problem'); ?>
 		<?php $this->load->view('sidebar_contest'); ?>
 		<!-- end #sidebar -->
       </div>
@@ -86,7 +86,7 @@ CuFon ends -->
     </div>
   </div>
 	<!-- footer -->
-	<?php $this->load->view('footer'); ?>   
+	<?php $this->load->view('footer'); ?>
 	<!-- end #footer -->
 </div>
 </body>

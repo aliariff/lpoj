@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>PC.LP Contest Scoreboard</title>
+<title>BL.PC Contest Scoreboard</title>
 
 </head>
 <body>
