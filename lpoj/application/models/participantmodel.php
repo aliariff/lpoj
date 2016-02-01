@@ -72,7 +72,7 @@ class Participantmodel extends CI_Model
         if ($qr->num_rows() > 0) {
             echo "<table>";
             echo "<tr><td colspan='2'>" . character_limiter($row->contest_name, 15) . "</td></tr>";
-            echo "<tr><td colspan='2'>Participant ID : " . $row->participant_id . "</td></tr>";
+            // echo "<tr><td colspan='2'>Participant ID : " . $row->participant_id . "</td></tr>";
             echo "<tr><td>Start</td><td>: " . unix_to_human($row->contest_start) . "</td></tr>";
             echo "<tr><td>Frz</td><td>: " . unix_to_human($row->contest_freeze) . "</td></tr>";
             echo "<tr><td>End</td><td>: " . unix_to_human($row->contest_end) . "</td></tr>";
