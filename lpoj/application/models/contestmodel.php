@@ -139,7 +139,7 @@ class Contestmodel extends CI_Model
             echo "<tr><td>Start</td><td>: " . unix_to_human($row->contest_start) . "</td></tr>";
             echo "<tr><td>Frz</td><td>: " . unix_to_human($row->contest_freeze) . "</td></tr>";
             echo "<tr><td>End</td><td>: " . unix_to_human($row->contest_end) . "</td></tr>";
-            echo "<tr><td>Pty</td><td>: " . $row->contest_penalty . " s</td></tr>";
+            // echo "<tr><td>Pty</td><td>: " . $row->contest_penalty . " s</td></tr>";
             echo "<tr><td>Active</td><td>: " . $userr->first_row()->sum . " users</td></tr>";
             echo "</table>";
         } else {
