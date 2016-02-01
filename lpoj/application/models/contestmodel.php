@@ -179,7 +179,7 @@ class Contestmodel extends CI_Model
             echo "<form method='post' action='" . site_url() . "/contest_select'>";
             echo "<select name='contest'>";
             foreach ($qr->result() as $row) {
-                echo "<option value='" . $row->contest_id . "'>" . $row->contest_id . " - " . character_limiter($row->contest_name, 30) . "</option>";
+                echo "<option value='" . $row->contest_id . "'>" . character_limiter($row->contest_name, 30) . "</option>";
             }
             echo "</select><br />";
             echo "<input type='submit' value='Select Contest' name='contestselect' />";

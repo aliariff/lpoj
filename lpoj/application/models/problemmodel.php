@@ -77,7 +77,7 @@ class Problemmodel extends CI_Model
         if ($qr->num_rows() > 0) {
             echo "<ul class=\"sb_menu\">";
             foreach ($qr->result() as $row) {
-                echo "<li><a href='" . site_url() . "/problem/detail/" . $row->problem_id . "'>" . $row->problem_id . " - " . $row->problem_title . "</a></li>";
+                echo "<li><a href='" . site_url() . "/problem/detail/" . $row->problem_id . "'>" . $row->problem_title . "</a></li>";
             }
             echo "</ul>";
         } else {
@@ -98,7 +98,7 @@ class Problemmodel extends CI_Model
         if ($qr->num_rows() > 0) {
             echo "<ul class=\"sb_menu\">";
             foreach ($qr->result() as $row) {
-                echo "<li><a href='" . site_url() . "/contest/problem/" . $row->problem_id . "'>" . $row->problem_id . " - " . $row->problem_title . "</a></li>";
+                echo "<li><a href='" . site_url() . "/contest/problem/" . $row->problem_id . "'>" . $row->problem_title . "</a></li>";
             }
             echo "</ul>";
         } else {
