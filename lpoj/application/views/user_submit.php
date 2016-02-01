@@ -4,17 +4,6 @@
 <title>PC.LP</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link href="<?php echo base_url(); ?>style.css" rel="stylesheet" type="text/css" />
-<!-- EditArea Plugin -->
-<script language="javascript" type="text/javascript" src="<?php echo base_url();?>js/editarea/edit_area_full.js"></script>
-<script language="javascript" type="text/javascript">
-editAreaLoader.init({
-	id : "textarea_1"		// textarea id
-	,syntax: "css"			// syntax to be uses for highgliting
-	,start_highlight: true		// to display with highlight mode on start-up
-});
-
-</script>
-<!-- EditArea Plugin Ends -->
 </head>
 <body>
 <div class="main">
