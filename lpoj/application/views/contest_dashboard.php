@@ -4,12 +4,12 @@
 		<title>PC.LP</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link href="<?php echo base_url(); ?>style.css" rel="stylesheet" type="text/css" />
-		<!-- CuFon: Enables smooth pretty custom font rendering. 100% SEO friendly. To disable, remove this section 
+		<!-- CuFon: Enables smooth pretty custom font rendering. 100% SEO friendly. To disable, remove this section
 		<script type="text/javascript" src="js/cufon-yui.js"></script>
 		<script type="text/javascript" src="js/droid_sans_400-droid_sans_700.font.js"></script>
 		<script type="text/javascript" src="js/cuf_run.js"></script>
 		CuFon ends -->
-		
+
 		<!-- TinyMCE -->
 		<script src="<?php echo base_url(); ?>tinymce/tinymce.min.js"></script>
 		<script>
@@ -54,10 +54,10 @@
 									<td>Contest End Time</td>
 									<td>: <input type="text" name="conend" size="40" value="<?php echo $this->Contestmodel->getContestEnd(); ?>" /></td>
 								</tr>
-								<tr>
+								<!-- <tr>
 									<td>Contest Penalty</td>
 									<td>: <input type="text" name="conpenalty" size="40" value="<?php echo $this->Contestmodel->getContestPenalty(); ?>" /></td>
-								</tr>
+								</tr> -->
 								<tr>
 									<td colspan="2"><input type="submit" value="Update Contest Details" /></td>
 								</tr>
@@ -81,7 +81,7 @@
 				</div>
 			</div>
 		<!-- footer -->
-		<?php $this->load->view('footer'); ?>   
+		<?php $this->load->view('footer'); ?>
 		<!-- end #footer -->
 	</div>
 </body>
