@@ -18,7 +18,7 @@ class Participantmodel extends CI_Model
     public function getParticipantProblem($contestid)
     {
         $q = "
-            SELECT pcprob.problem_id
+            SELECT pcprob.problem_id, pcprob.problem_title
             FROM pc_problem pcprob, pc_detcon pcd
             WHERE pcd.contest_id = '" . $contestid . "'
             and pcprob.problem_id = pcd.problem_id
@@ -26,7 +26,7 @@ class Participantmodel extends CI_Model
         ";
         $qr = $this->db->query($q);
         foreach ($qr->result() as $row) {
-            echo "<td NOWRAP>Problem #" . $row->problem_id . "</td>";
+            echo "<td NOWRAP>Problem #" . character_limiter($row->problem_title, 25) . "</td>";
         }
     }
 
